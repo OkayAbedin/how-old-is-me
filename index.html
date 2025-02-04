@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate your age with precision using our simple age calculator">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet">
-    <title>How Old Is Me</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>How Old Is Me - Age Calculator</title>
 </head>
 
 <body>
-
-
+    <main class="container">
+        <h1>Age Calculator</h1>
+        <form id="ageForm" aria-label="Age calculation form">
+            <div class="form-group">
+                <label for="birthdate">Enter your birthdate:</label>
+                <input 
+                    type="date" 
+                    id="birthdate" 
+                    name="birthdate" 
+                    required 
+                    aria-required="true"
+                    max="<%= new Date().toISOString().split('T')[0] %>"
+                >
+            </div>
+            <button type="submit" class="submit-btn">Calculate Age</button>
+        </form>
+        <div id="result" aria-live="polite"></div>
+    </main>
     <script src="script.js"></script>
 </body>
-
 </html>
