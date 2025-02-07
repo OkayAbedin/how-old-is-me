@@ -50,6 +50,7 @@ h1 {
     letter-spacing: -0.5px;
     margin-bottom: 2rem;
     background: linear-gradient(to right, #fff, rgba(255,255,255,0.8));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
