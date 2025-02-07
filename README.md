@@ -44,4 +44,4 @@ A modern, intuitive age calculator web app with detailed time breakdowns and ast
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/how-old-is-me.git
+git clone https://github.com/okayabedin/how-old-is-me.git
