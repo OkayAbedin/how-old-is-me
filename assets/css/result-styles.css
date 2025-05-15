@@ -1,0 +1,52 @@
+/* Result animation styles */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhance time units display */
+.time-units div {
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+.time-units div:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .time-units div {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced visualization styles */
+.age-visualization canvas {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.age-visualization canvas:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Add a subtle hover effect to all content sections */
+.tab-content > div {
+    transition: transform 0.3s ease;
+}
+
+.tab-content > div:hover {
+    transform: translateY(-3px);
+}

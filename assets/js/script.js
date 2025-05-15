@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabContents = document.querySelectorAll('.tab-content');
     const shareBtn = document.getElementById('shareBtn');
     const printBtn = document.getElementById('printBtn');
-    const themeToggle = document.getElementById('themeToggle');    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
     const profilesList = document.getElementById('profilesList');
     const savedProfiles = document.getElementById('savedProfiles');
 
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ? '<i class="fas fa-moon"></i>' 
             : '<i class="fas fa-sun"></i>';
     });
-      // Set initial theme from localStorage or default to dark
+    // Set initial theme from localStorage or default to dark
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.setAttribute('data-theme', savedTheme);
     themeToggle.innerHTML = savedTheme === 'dark' 
@@ -435,14 +436,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submission handler
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-          const birthdate = new Date(document.getElementById('birthdate').value);
+        const birthdate = new Date(document.getElementById('birthdate').value);
         const today = new Date();
         const name = document.getElementById('name').value || 'You';
         const region = document.getElementById('region').value;
         
         if (birthdate > today) {
-            // Don't show error, just clear the result
-            resultDiv.innerHTML = '';
+            // Add subtle validation feedback
+            const birthdateInput = document.getElementById('birthdate');
+            birthdateInput.classList.add('invalid-input');
+            
+            // Clear the result and show a friendly message
+            resultDiv.innerHTML = `
+                <div class="result-box error-message">
+                    <p>Please select a date in the past. We can't calculate your age if you're not born yet! 😊</p>
+                </div>
+            `;
+            
+            // Remove the error styling after 3 seconds
+            setTimeout(() => {
+                birthdateInput.classList.remove('invalid-input');
+            }, 3000);
+            
             return;
         }
         
@@ -776,4 +791,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         savedProfiles.hidden = false;
     };
-});
+    
+    // Initial render of saved profiles on page load
+    renderProfiles();
+}); // End of DOMContentLoaded event listener
