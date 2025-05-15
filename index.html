@@ -3,25 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculate your age with precision using our simple age calculator">
+    <meta name="description" content="Calculate your age with precision using our advanced age calculator with historical events and life insights">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>How Old Is Me - Age Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>How Old Is Me - Advanced Age Calculator</title>
 </head>
-<body>
-    <main class="container">
+<body data-theme="dark">    <main class="container">
+        <div class="theme-toggle-container">
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
         <h1>How Old Is Me?</h1>
+        <p class="tagline">Discover your age in fascinating detail</p>
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="basic">Basic</button>
             <button class="tab-btn" data-tab="detailed">Detailed</button>
             <button class="tab-btn" data-tab="astro">Astrology</button>
-        </div>
-
-        <form id="ageForm" aria-label="Age calculation form">
+            <button class="tab-btn" data-tab="history">History</button>
+            <button class="tab-btn" data-tab="life">Life Stats</button>
+        </div>        <form id="ageForm" aria-label="Age calculation form">
             <div class="form-group">
                 <label for="birthdate">Enter your birthdate:</label>
                 <input 
@@ -30,13 +37,29 @@
                     name="birthdate" 
                     required 
                     aria-required="true"
-                    max="<%= new Date().toISOString().split('T')[0] %>"
                 >
             </div>
-            <button type="submit" class="submit-btn">Calculate Age</button>
-        </form>
-
-        <div id="result" aria-live="polite"></div>
+            <div class="form-group">
+                <label for="name">Your Name (optional):</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    placeholder="Enter your name"
+                >
+            </div>
+            <div class="form-group region-selector">
+                <label for="region">Your Region (for life expectancy):</label>
+                <select id="region" name="region">
+                    <option value="global">Global Average</option>
+                    <option value="america">North America</option>
+                    <option value="europe">Europe</option>
+                    <option value="asia">Asia</option>
+                    <option value="africa">Africa</option>
+                    <option value="oceania">Oceania</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">Calculate Age</button>        </form>        <div id="result" aria-live="polite"></div>
 
         <div class="result-tabs">
             <div class="tab-content" id="basicTab">
@@ -46,10 +69,16 @@
             <div class="tab-content" id="detailedTab" hidden>
                 <div class="time-units">
                     <h3>Your age in different units</h3>
+                    <div id="yearsMonthsDaysResult"></div>
                     <div id="monthsResult"></div>
                     <div id="weeksResult"></div>
                     <div id="daysResult"></div>
                     <div id="hoursResult"></div>
+                    <div id="minutesResult"></div>
+                    <div id="secondsResult"></div>
+                </div>
+                <div class="age-visualization">
+                    <canvas id="ageVisual" width="300" height="200"></canvas>
                 </div>
             </div>
 
@@ -57,28 +86,65 @@
                 <div class="astro-info">
                     <h3>Astrological Information</h3>
                     <div id="zodiacResult"></div>
+                    <div id="zodiacDescription"></div>
                     <div id="dayOfWeekResult"></div>
                     <div id="nextBirthdayResult"></div>
+                    <div id="moonPhaseResult"></div>
                 </div>
             </div>
-        </div>
-
-        <div class="actions">
+            
+            <div class="tab-content" id="historyTab" hidden>
+                <div class="history-info">
+                    <h3>Historical Events from Your Birth Year</h3>
+                    <div id="historicalEvents" class="events-list"></div>
+                    <div id="famousBirthdays" class="celebrity-list">
+                        <h4>Famous People Who Share Your Birthday</h4>
+                        <ul id="celebrityList"></ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="lifeTab" hidden>
+                <div class="life-stats">
+                    <h3>Life Statistics</h3>
+                    <div class="life-expectancy-container">
+                        <h4>Life Expectancy</h4>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="lifeProgress"></div>
+                        </div>
+                        <p id="lifeExpectancy"></p>
+                    </div>
+                    <div id="sleepStats"></div>
+                    <div id="heartbeatsStats"></div>
+                    <div id="breathsStats"></div>
+                </div>
+            </div>
+        </div>        <div class="actions">
+            <button id="saveProfileBtn" class="action-btn">
+                <i class="fas fa-save"></i>
+                Save Profile
+            </button>
             <button id="shareBtn" class="action-btn">
-                <svg width="16" height="16" fill="currentColor" class="share-icon">
-                    <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
-                </svg>
+                <i class="fas fa-share-alt"></i>
                 Share
             </button>
             <button id="printBtn" class="action-btn">
-                <svg width="16" height="16" fill="currentColor" class="print-icon">
-                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
-                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5z"/>
-                </svg>
+                <i class="fas fa-print"></i>
                 Print
             </button>
         </div>
+        
+        <div id="savedProfiles" class="saved-profiles" hidden>
+            <h3>Saved Profiles</h3>
+            <div id="profilesList" class="profiles-list"></div>
+        </div>
     </main>
-    <script src="script.js"></script>
+      <footer>
+        <p>© 2025 How Old Is Me | Made with <i class="fas fa-heart"></i></p>
+    </footer>    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    <script src="script.js"></script>
+    <script src="life-stats-enhancer.js"></script>
+    <script src="fun-facts.js"></script>
+    <script src="tab-animations.js"></script>
+    <script src="loader-fix.js"></script>
 </body>
 </html>
