@@ -205,7 +205,8 @@ document.addEventListener('DOMContentLoaded', () => {
             birthdateInput.value = urlDate.dateString;
             if (urlDate.name) {
                 nameInput.value = urlDate.name;
-            }            console.log('Form populated, submitting...');
+            }
+            console.log('Form populated, submitting...');
             // Auto-submit the form to show results immediately
             setTimeout(() => {
                 if (form) {
@@ -231,7 +232,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } else {
         console.log('No valid date found in URL:', window.location.pathname, window.location.hash);
-    }// Handle browser back/forward navigation
+    }
+
+    // Also handle when hash is set by the head script (for immediate processing)
+    setTimeout(() => {
+        const urlDateDelayed = parseUrlForDate();
+        if (urlDateDelayed && !urlDate) {
+            console.log('Delayed URL date check found date:', urlDateDelayed);
+            const birthdateInput = document.getElementById('birthdate');
+            const nameInput = document.getElementById('name');
+            
+            if (birthdateInput && nameInput) {
+                birthdateInput.value = urlDateDelayed.dateString;
+                if (urlDateDelayed.name) {
+                    nameInput.value = urlDateDelayed.name;
+                }
+                console.log('Form populated from delayed check, submitting...');
+                setTimeout(() => {
+                    if (form) {
+                        form.dispatchEvent(new Event('submit'));
+                    }
+                }, 100);
+            }
+        }
+    }, 300); // Check again after head script has had time to set hash// Handle browser back/forward navigation
     window.addEventListener('popstate', () => {
         const urlDate = parseUrlForDate();
         if (urlDate) {

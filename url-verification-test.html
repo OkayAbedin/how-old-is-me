@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>URL Verification Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .result { margin: 10px 0; padding: 10px; border-left: 4px solid #ccc; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .info { border-left-color: #17a2b8; background: #d1ecf1; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .url-display { font-family: monospace; background: #f8f9fa; padding: 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 URL Verification Test</h1>
+    
+    <div id="status">
+        <h3>Current URL Status:</h3>
+        <div id="urlInfo"></div>
+    </div>
+    
+    <div>
+        <h3>Tests:</h3>
+        <button onclick="testHashVisibility()">✅ Check Hash Visibility</button>
+        <button onclick="testDirectUrlToHash()">🔄 Test Direct→Hash Conversion</button>
+        <button onclick="openActualPage()">🚀 Open Real Age Calculator</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        function updateUrlInfo() {
+            document.getElementById('urlInfo').innerHTML = `
+                <div><strong>Full URL:</strong> <span class="url-display">${window.location.href}</span></div>
+                <div><strong>Pathname:</strong> <span class="url-display">${window.location.pathname}</span></div>
+                <div><strong>Hash:</strong> <span class="url-display">${window.location.hash || '(none)'}</span></div>
+                <div><strong>Hash visible:</strong> ${window.location.hash ? '✅ YES' : '❌ NO'}</div>
+            `;
+        }
+
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = message;
+            document.getElementById('results').appendChild(div);
+        }
+
+        function testHashVisibility() {
+            updateUrlInfo();
+            if (window.location.hash && window.location.hash.startsWith('#/')) {
+                addResult('✅ Hash URL is visible in browser address bar!', 'success');
+                addResult(`Hash content: <span class="url-display">${window.location.hash}</span>`, 'info');
+            } else {
+                addResult('❌ No hash URL visible in address bar', 'error');
+            }
+        }
+
+        function testDirectUrlToHash() {
+            addResult('🔄 Testing direct URL to hash conversion...', 'info');
+            
+            // Simulate the conversion logic
+            const testPath = '/02-03-2004/Sumiya';
+            const dateMatch = testPath.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+            
+            if (dateMatch) {
+                const hashUrl = '#/' + dateMatch[1];
+                addResult(`Would convert "${testPath}" to "${hashUrl}"`, 'info');
+                
+                // Actually do the conversion
+                window.location.hash = hashUrl;
+                
+                setTimeout(() => {
+                    const newUrl = window.location.origin + window.location.pathname + hashUrl;
+                    window.history.replaceState({}, '', newUrl);
+                    updateUrlInfo();
+                    addResult('✅ Conversion completed - check address bar above!', 'success');
+                }, 100);
+            } else {
+                addResult('❌ Failed to match date pattern', 'error');
+            }
+        }
+
+        function openActualPage() {
+            addResult('🚀 Opening actual age calculator with hash URL...', 'info');
+            window.open('./index.html#/02-03-2004/Sumiya', '_blank');
+        }
+
+        // Monitor hash changes
+        window.addEventListener('hashchange', () => {
+            addResult(`📍 Hash changed to: ${window.location.hash}`, 'success');
+            updateUrlInfo();
+        });
+
+        // Initialize
+        updateUrlInfo();
+        addResult('🟢 Verification test ready', 'info');
+    </script>
+</body>
+</html>

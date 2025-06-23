@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🔍 Hash URL Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f0f0f0;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { border-left: 5px solid #28a745; }
+        .error { border-left: 5px solid #dc3545; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #0056b3; }
+        .url { 
+            font-family: monospace; 
+            background: #f8f9fa; 
+            padding: 5px; 
+            border-radius: 3px; 
+            word-break: break-all;
+        }
+        .current-state {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Hash URL Test</h1>
+    
+    <div class="test-box">
+        <h3>Current State</h3>
+        <div id="current-state" class="current-state">
+            Loading...
+        </div>
+        <button onclick="updateState()">🔄 Refresh State</button>
+    </div>
+    
+    <div class="test-box">
+        <h3>Test Hash URL Setting</h3>
+        <p>This will test if setting hash URLs works and shows in the URL bar:</p>
+        
+        <button onclick="setTestHash()">🎯 Set Test Hash</button>
+        <button onclick="clearHash()">🧹 Clear Hash</button>
+        <button onclick="testMainPageWithHash()">📱 Test Main Page with Hash</button>
+        
+        <div id="hash-results"></div>
+    </div>
+
+    <script>
+        function updateState() {
+            const stateDiv = document.getElementById('current-state');
+            stateDiv.innerHTML = `
+                <strong>Current URL:</strong> <span class="url">${window.location.href}</span><br>
+                <strong>Pathname:</strong> <span class="url">${window.location.pathname}</span><br>
+                <strong>Hash:</strong> <span class="url">${window.location.hash || '(none)'}</span><br>
+                <strong>Time:</strong> ${new Date().toLocaleTimeString()}
+            `;
+        }
+        
+        function setTestHash() {
+            const testHash = '#/02-03-2004/Sumiya';
+            console.log('Setting hash to:', testHash);
+            
+            window.location.hash = testHash;
+            
+            setTimeout(() => {
+                updateState();
+                
+                const resultsDiv = document.getElementById('hash-results');
+                const currentHash = window.location.hash;
+                
+                if (currentHash === testHash) {
+                    resultsDiv.innerHTML = `
+                        <div class="test-box success">
+                            <h4>✅ Hash Set Successfully!</h4>
+                            <p><strong>Expected:</strong> ${testHash}</p>
+                            <p><strong>Actual:</strong> ${currentHash}</p>
+                            <p><strong>Visible in URL bar:</strong> ${currentHash ? 'YES' : 'NO'}</p>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="test-box error">
+                            <h4>❌ Hash Setting Failed!</h4>
+                            <p><strong>Expected:</strong> ${testHash}</p>
+                            <p><strong>Actual:</strong> ${currentHash}</p>
+                        </div>
+                    `;
+                }
+            }, 100);
+        }
+        
+        function clearHash() {
+            console.log('Clearing hash');
+            window.location.hash = '';
+            setTimeout(() => {
+                updateState();
+                document.getElementById('hash-results').innerHTML = '<p>Hash cleared</p>';
+            }, 100);
+        }
+        
+        function testMainPageWithHash() {
+            const targetUrl = './index.html#/02-03-2004/Sumiya';
+            console.log('Opening main page with hash:', targetUrl);
+            
+            const resultsDiv = document.getElementById('hash-results');
+            resultsDiv.innerHTML = `
+                <div class="test-box">
+                    <h4>📱 Opening Main Page</h4>
+                    <p><strong>Target:</strong> <span class="url">${targetUrl}</span></p>
+                    <p>Check if the hash appears in the URL bar and if the form gets populated.</p>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                window.open(targetUrl, '_blank');
+            }, 1000);
+        }
+        
+        // Auto-update state on load
+        window.addEventListener('load', updateState);
+        window.addEventListener('hashchange', () => {
+            console.log('Hash changed to:', window.location.hash);
+            updateState();
+        });
+    </script>
+</body>
+</html>

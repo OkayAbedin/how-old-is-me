@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🌟 Complete Flow Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .step {
+            background: rgba(255,255,255,0.1);
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .step h3 { margin-top: 0; }
+        .success { border: 2px solid #28a745; }
+        .error { border: 2px solid #dc3545; }
+        .warning { border: 2px solid #ffc107; }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        button:hover { background: #218838; }
+        .danger { background: #dc3545; }
+        .danger:hover { background: #c82333; }
+        .info { background: #17a2b8; }
+        .info:hover { background: #138496; }
+        .url { 
+            font-family: 'Courier New', monospace; 
+            background: rgba(0,0,0,0.3); 
+            padding: 8px; 
+            border-radius: 4px; 
+            word-break: break-all;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        .result { margin-top: 15px; padding: 15px; border-radius: 8px; }
+        .current-url {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌟 Complete Flow Test</h1>
+    <h2>Testing Hash URL Visibility</h2>
+    
+    <div class="step">
+        <h3>📍 Current URL State</h3>
+        <div id="current-url" class="current-url">
+            Loading...
+        </div>
+        <button onclick="refreshUrl()" class="info">🔄 Refresh URL State</button>
+    </div>
+    
+    <div class="step warning">
+        <h3>🎯 The Core Issue</h3>
+        <p>The hash URL should appear in the browser's address bar when someone visits:</p>
+        <div class="url">https://okayabedin.github.io/how-old-is-me/02-03-2004/Sumiya</div>
+        <p>After redirect, it should become:</p>
+        <div class="url">https://okayabedin.github.io/how-old-is-me/index.html#/02-03-2004/Sumiya</div>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Hash URL Tests</h3>
+        
+        <button onclick="testSimpleHash()">1️⃣ Test Simple Hash Setting</button>
+        <button onclick="testComplexHash()">2️⃣ Test Target Hash</button>
+        <button onclick="testUrlReplacement()">3️⃣ Test URL Replacement</button>
+        <button onclick="simulateDirectAccess()">4️⃣ Simulate Direct Access</button>
+        
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="step">
+        <h3>🚀 Final Test</h3>
+        <p>This will open the actual age calculator and check if everything works:</p>
+        
+        <button onclick="openRealPage()" class="danger">📱 OPEN REAL PAGE WITH HASH</button>
+        <button onclick="open404Test()" class="info">🔧 TEST 404 REDIRECT</button>
+    </div>
+
+    <script>
+        function refreshUrl() {
+            const urlDiv = document.getElementById('current-url');
+            urlDiv.innerHTML = `
+                <strong>Full URL:</strong><br>
+                <div class="url">${window.location.href}</div>
+                <strong>Hash:</strong> <span style="color: #ffc107;">${window.location.hash || '(none)'}</span><br>
+                <strong>Time:</strong> ${new Date().toLocaleTimeString()}
+            `;
+        }
+        
+        function testSimpleHash() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="result">Testing simple hash setting...</div>';
+            
+            const testHash = '#test123';
+            window.location.hash = testHash;
+            
+            setTimeout(() => {
+                const currentHash = window.location.hash;
+                const success = currentHash === testHash;
+                
+                resultsDiv.innerHTML = `
+                    <div class="result ${success ? 'success' : 'error'}">
+                        <h4>${success ? '✅' : '❌'} Simple Hash Test</h4>
+                        <p><strong>Set:</strong> ${testHash}</p>
+                        <p><strong>Got:</strong> ${currentHash}</p>
+                        <p><strong>Visible in URL:</strong> ${currentHash ? 'YES' : 'NO'}</p>
+                    </div>
+                `;
+                refreshUrl();
+            }, 100);
+        }
+        
+        function testComplexHash() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="result">Testing target hash setting...</div>';
+            
+            const targetHash = '#/02-03-2004/Sumiya';
+            window.location.hash = targetHash;
+            
+            setTimeout(() => {
+                const currentHash = window.location.hash;
+                const success = currentHash === targetHash;
+                
+                resultsDiv.innerHTML = `
+                    <div class="result ${success ? 'success' : 'error'}">
+                        <h4>${success ? '✅' : '❌'} Target Hash Test</h4>
+                        <p><strong>Set:</strong> ${targetHash}</p>
+                        <p><strong>Got:</strong> ${currentHash}</p>
+                        <p><strong>Visible in URL:</strong> ${currentHash ? 'YES' : 'NO'}</p>
+                        ${success ? '<p><strong>✨ This means hash URLs work correctly!</strong></p>' : ''}
+                    </div>
+                `;
+                refreshUrl();
+            }, 100);
+        }
+        
+        function testUrlReplacement() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="result">Testing URL replacement...</div>';
+            
+            const currentUrl = window.location.href;
+            const targetHash = '#/02-03-2004/Sumiya';
+            const newUrl = window.location.origin + window.location.pathname + targetHash;
+            
+            window.history.replaceState({}, '', newUrl);
+            
+            setTimeout(() => {
+                const actualUrl = window.location.href;
+                const actualHash = window.location.hash;
+                const success = actualHash === targetHash;
+                
+                resultsDiv.innerHTML = `
+                    <div class="result ${success ? 'success' : 'error'}">
+                        <h4>${success ? '✅' : '❌'} URL Replacement Test</h4>
+                        <p><strong>Original:</strong> <span class="url">${currentUrl}</span></p>
+                        <p><strong>Target:</strong> <span class="url">${newUrl}</span></p>
+                        <p><strong>Actual:</strong> <span class="url">${actualUrl}</span></p>
+                        <p><strong>Hash visible:</strong> ${actualHash ? 'YES' : 'NO'}</p>
+                    </div>
+                `;
+                refreshUrl();
+            }, 100);
+        }
+        
+        function simulateDirectAccess() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="result">Simulating direct access conversion...</div>';
+            
+            // Simulate the logic from index.html head script
+            const simulatedPath = '/how-old-is-me/02-03-2004/Sumiya';
+            const dateMatch = simulatedPath.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+            
+            if (dateMatch) {
+                const hashUrl = '#/' + dateMatch[1];
+                console.log('Simulated conversion would create:', hashUrl);
+                
+                // Actually set this hash
+                window.location.hash = hashUrl;
+                
+                setTimeout(() => {
+                    const actualHash = window.location.hash;
+                    const success = actualHash === hashUrl;
+                    
+                    resultsDiv.innerHTML = `
+                        <div class="result ${success ? 'success' : 'error'}">
+                            <h4>${success ? '✅' : '❌'} Direct Access Simulation</h4>
+                            <p><strong>Simulated Path:</strong> <span class="url">${simulatedPath}</span></p>
+                            <p><strong>Extracted:</strong> ${dateMatch[1]}</p>
+                            <p><strong>Generated Hash:</strong> ${hashUrl}</p>
+                            <p><strong>Actual Hash:</strong> ${actualHash}</p>
+                            <p><strong>Success:</strong> ${success ? 'YES - Hash is visible!' : 'NO - Hash not showing'}</p>
+                        </div>
+                    `;
+                    refreshUrl();
+                }, 100);
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        <h4>❌ Direct Access Simulation Failed</h4>
+                        <p>Could not extract date from: ${simulatedPath}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function openRealPage() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = `
+                <div class="result success">
+                    <h4>🚀 Opening Real Age Calculator</h4>
+                    <p>Opening: <span class="url">index.html#/02-03-2004/Sumiya</span></p>
+                    <p><strong>Check:</strong></p>
+                    <ul>
+                        <li>Does the hash appear in the URL bar?</li>
+                        <li>Does the form get populated with February 3, 2004 and "Sumiya"?</li>
+                        <li>Do the age calculation results appear?</li>
+                    </ul>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                window.open('./index.html#/02-03-2004/Sumiya', '_blank');
+            }, 1000);
+        }
+        
+        function open404Test() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = `
+                <div class="result">
+                    <h4>🔧 Testing 404 Redirect</h4>
+                    <p>This will open the 404 page to test the redirect logic.</p>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                window.open('./404.html', '_blank');
+            }, 500);
+        }
+        
+        // Auto-refresh on load and hash changes
+        window.addEventListener('load', refreshUrl);
+        window.addEventListener('hashchange', refreshUrl);
+        
+        // Initial load
+        refreshUrl();
+    </script>
+</body>
+</html>

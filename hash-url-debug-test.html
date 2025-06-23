@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hash URL Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>Hash URL Test - Final Debug</h1>
+    
+    <div id="results"></div>
+    
+    <div class="test-result info">
+        <h3>Current State:</h3>
+        <p><strong>Current URL:</strong> <span id="currentUrl"></span></p>
+        <p><strong>Pathname:</strong> <span id="pathname"></span></p>
+        <p><strong>Hash:</strong> <span id="hash"></span></p>
+        <p><strong>Search:</strong> <span id="search"></span></p>
+    </div>
+
+    <script>
+        function updateCurrentState() {
+            document.getElementById('currentUrl').textContent = window.location.href;
+            document.getElementById('pathname').textContent = window.location.pathname;
+            document.getElementById('hash').textContent = window.location.hash;
+            document.getElementById('search').textContent = window.location.search;
+        }
+
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<p>${message}</p>`;
+            results.appendChild(div);
+        }
+
+        // Simulate the exact logic from index.html
+        addResult('🚀 Starting URL processing test...', 'info');
+        updateCurrentState();
+
+        // Test the exact logic from the head script
+        (function() {
+            const path = window.location.pathname;
+            const hash = window.location.hash;
+            
+            addResult(`Initial path: "${path}", hash: "${hash}"`, 'info');
+            
+            // Skip if we already have a hash
+            if (hash && hash.startsWith('#/')) {
+                addResult('Hash already present, skipping', 'success');
+                return;
+            }
+            
+            // Check for date pattern in path
+            const dateMatch = path.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+            if (dateMatch) {
+                const hashUrl = '#/' + dateMatch[1];
+                addResult(`Date pattern found: "${dateMatch[1]}"`, 'success');
+                addResult(`Converting to hash: "${hashUrl}"`, 'info');
+                
+                // Store the hash URL for later processing
+                window._pendingHashUrl = hashUrl;
+                
+                // Set hash immediately
+                window.location.hash = hashUrl;
+                addResult('Hash set immediately', 'success');
+                
+                // Also use replaceState to clean up the URL
+                setTimeout(() => {
+                    const cleanPath = path.replace(dateMatch[0], '') || '/';
+                    const newUrl = window.location.origin + cleanPath + hashUrl;
+                    addResult(`Cleaning URL to: "${newUrl}"`, 'info');
+                    window.history.replaceState({}, '', newUrl);
+                    updateCurrentState();
+                    addResult('URL cleaned with replaceState', 'success');
+                }, 100);
+            } else {
+                addResult('No date pattern found in path', 'error');
+            }
+        })();
+
+        // Monitor hash changes
+        window.addEventListener('hashchange', function() {
+            addResult('Hash changed! New hash: ' + window.location.hash, 'success');
+            updateCurrentState();
+        });
+
+        // Update state after a delay
+        setTimeout(updateCurrentState, 200);
+        setTimeout(updateCurrentState, 500);
+    </script>
+</body>
+</html>

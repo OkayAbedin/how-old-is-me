@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulate Direct URL Access</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>Simulate Direct URL: /02-03-2004/Sumiya</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="testHashHandling()">Test Hash URL Conversion</button>
+    <button onclick="testParseFunction()">Test Parse Function</button>
+    <button onclick="simulateDirectAccess()">Simulate Direct Access</button>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<p>${message}</p>`;
+            results.appendChild(div);
+        }
+
+        function testHashHandling() {
+            addResult('🧪 Testing hash URL conversion...', 'info');
+            
+            // Simulate a path with date/name
+            const mockPath = '/02-03-2004/Sumiya';
+            addResult(`Mock path: ${mockPath}`, 'info');
+            
+            const dateMatch = mockPath.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+            if (dateMatch) {
+                const hashUrl = '#/' + dateMatch[1];
+                addResult(`✅ Date match found: "${dateMatch[1]}"`, 'success');
+                addResult(`✅ Hash URL would be: "${hashUrl}"`, 'success');
+                
+                // Actually set the hash to test
+                window.location.hash = hashUrl;
+                addResult(`✅ Hash set to: "${window.location.hash}"`, 'success');
+            } else {
+                addResult('❌ No date match found', 'error');
+            }
+        }
+
+        function testParseFunction() {
+            addResult('🧪 Testing parse function...', 'info');
+            
+            // Copy the exact parse function from script.js
+            const parseUrlForDate = () => {
+                let path = window.location.pathname;
+                let pathParts = path.split('/').filter(part => part.length > 0);
+                
+                // Also check hash for compatibility
+                if (window.location.hash && window.location.hash.startsWith('#/')) {
+                    const hashPath = window.location.hash.substring(2); // Remove #/
+                    pathParts = hashPath.split('/').filter(part => part.length > 0);
+                    addResult(`Using hash path: ${hashPath}`, 'info');
+                }
+                
+                addResult(`Path parts: [${pathParts.join(', ')}]`, 'info');
+                
+                const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+                
+                for (let i = 0; i < pathParts.length; i++) {
+                    const part = pathParts[i];
+                    const match = part.match(datePattern);
+                    if (match) {
+                        const [, month, day, year] = match;
+                        addResult(`Date pattern match: month=${month}, day=${day}, year=${year}`, 'success');
+                        
+                        // Validate the date (MM-DD-YYYY format from URL)
+                        const date = new Date(year, month - 1, day);
+                        if (date.getFullYear() == year && 
+                            date.getMonth() == month - 1 && 
+                            date.getDate() == day &&
+                            date <= new Date()) {
+                            
+                            addResult(`✅ Date validation passed`, 'success');
+                            
+                            // Check if there's a name in the next part
+                            let name = null;
+                            if (i + 1 < pathParts.length) {
+                                const namePart = pathParts[i + 1];
+                                const decodedName = decodeURIComponent(namePart);
+                                if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                                    name = decodedName;
+                                    addResult(`✅ Name found: "${name}"`, 'success');
+                                }
+                            }
+                            
+                            return {
+                                day: parseInt(day),
+                                month: parseInt(month),
+                                year: parseInt(year),
+                                name: name,
+                                dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                            };
+                        } else {
+                            addResult(`❌ Date validation failed`, 'error');
+                        }
+                    }
+                }
+                return null;
+            };
+            
+            const result = parseUrlForDate();
+            if (result) {
+                addResult(`✅ Parse result: ${JSON.stringify(result)}`, 'success');
+            } else {
+                addResult(`❌ No valid date found`, 'error');
+            }
+        }
+
+        function simulateDirectAccess() {
+            addResult('🚀 Simulating direct access to /02-03-2004/Sumiya...', 'info');
+            
+            // Clear any existing hash
+            window.location.hash = '';
+            
+            setTimeout(() => {
+                // Simulate the URL processing
+                const mockPath = '/02-03-2004/Sumiya';
+                addResult(`Simulating path: ${mockPath}`, 'info');
+                
+                const dateMatch = mockPath.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+                if (dateMatch) {
+                    const hashUrl = '#/' + dateMatch[1];
+                    addResult(`Converting to hash: ${hashUrl}`, 'info');
+                    
+                    // Set the hash
+                    window.location.hash = hashUrl;
+                    
+                    // Simulate the replaceState call
+                    setTimeout(() => {
+                        const cleanPath = mockPath.replace(dateMatch[0], '') || '/';
+                        const newUrl = window.location.origin + cleanPath + hashUrl;
+                        addResult(`Would replaceState to: ${newUrl}`, 'info');
+                        
+                        // Actually do it
+                        window.history.replaceState({}, '', newUrl);
+                        addResult(`✅ URL updated to: ${window.location.href}`, 'success');
+                        
+                        // Test parsing again
+                        setTimeout(testParseFunction, 100);
+                    }, 100);
+                }
+            }, 100);
+        }
+
+        // Monitor hash changes
+        window.addEventListener('hashchange', function() {
+            addResult(`📍 Hash changed to: ${window.location.hash}`, 'success');
+        });
+    </script>
+</body>
+</html>

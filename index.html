@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <script>
+    <meta charset="UTF-8">    <script>
         // Handle direct URL access immediately
         (function() {
             const path = window.location.pathname;
@@ -21,7 +20,16 @@
             if (dateMatch) {
                 const hashUrl = '#/' + dateMatch[1];
                 console.log('Converting direct URL to hash:', hashUrl);
+                
+                // Set hash immediately and update URL to show hash
                 window.location.hash = hashUrl;
+                
+                // Use replaceState to update the URL to show the hash properly
+                setTimeout(() => {
+                    const newUrl = window.location.origin + window.location.pathname + hashUrl;
+                    console.log('Updating URL to show hash:', newUrl);
+                    window.history.replaceState({}, '', newUrl);
+                }, 50);
             }
         })();
     </script>

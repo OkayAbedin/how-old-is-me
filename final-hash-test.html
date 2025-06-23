@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🔧 Final Hash URL Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .test-step {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .warning { border-left-color: #ffc107; background: #fff3cd; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 500;
+        }
+        button:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        .url-box {
+            font-family: 'Courier New', monospace;
+            background: #f1f3f4;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        .current-url {
+            background: #e8f4f8;
+            border: 2px solid #17a2b8;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Final Hash URL Test</h1>
+        <p><strong>Goal:</strong> Verify that hash URLs appear correctly in the browser address bar</p>
+        
+        <div class="test-step">
+            <h3>📍 Current URL State</h3>
+            <div id="urlState"></div>
+        </div>
+
+        <div class="test-step">
+            <h3>🧪 Test Controls</h3>
+            <button onclick="simulateDirectURL()" class="btn-success">
+                🚀 Simulate: /02-03-2004/Sumiya
+            </button>
+            <button onclick="clearAndReset()">
+                🧹 Clear & Reset
+            </button>
+            <button onclick="openRealPage()">
+                🔗 Open Real Page
+            </button>
+        </div>
+
+        <div class="test-step">
+            <h3>📊 Test Results</h3>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        let stepCount = 0;
+
+        function updateUrlState() {
+            const stateDiv = document.getElementById('urlState');
+            stateDiv.innerHTML = `
+                <strong>Full URL:</strong>
+                <div class="url-box current-url">${window.location.href}</div>
+                <strong>Path:</strong> <code>${window.location.pathname}</code><br>
+                <strong>Hash:</strong> <code>${window.location.hash || '(none)'}</code><br>
+                <strong>Search:</strong> <code>${window.location.search || '(none)'}</code>
+            `;
+        }
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-step ${type}`;
+            div.innerHTML = `<strong>Step ${++stepCount}:</strong> ${message}`;
+            resultsDiv.appendChild(div);
+        }
+
+        function clearAndReset() {
+            document.getElementById('results').innerHTML = '';
+            stepCount = 0;
+            window.location.hash = '';
+            updateUrlState();
+            addResult('🧹 Test environment cleared', 'success');
+        }
+
+        function simulateDirectURL() {
+            addResult('🚀 Starting simulation of direct URL access...', 'info');
+            
+            // Clear existing hash first
+            window.location.hash = '';
+            updateUrlState();
+            addResult('Cleared existing hash', 'success');
+            
+            setTimeout(() => {
+                // Simulate the exact logic from the updated index.html head script
+                const mockPath = '/02-03-2004/Sumiya';
+                addResult(`Simulating access to: <code>${mockPath}</code>`, 'info');
+                
+                // Test the regex pattern
+                const dateMatch = mockPath.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+                if (dateMatch) {
+                    const hashUrl = '#/' + dateMatch[1];
+                    addResult(`✅ Date pattern matched: "${dateMatch[1]}"`, 'success');
+                    addResult(`Target hash URL: <code>${hashUrl}</code>`, 'info');
+                    
+                    // Set the hash (simulating the head script)
+                    window.location.hash = hashUrl;
+                    addResult('Hash set in window.location.hash', 'success');
+                    updateUrlState();
+                    
+                    // Use replaceState to update the browser URL (simulating the updated script)
+                    setTimeout(() => {
+                        const newUrl = window.location.origin + window.location.pathname + hashUrl;
+                        addResult(`Using replaceState to update URL to:<br><div class="url-box">${newUrl}</div>`, 'info');
+                        
+                        window.history.replaceState({}, '', newUrl);
+                        addResult('✅ replaceState executed successfully', 'success');
+                        updateUrlState();
+                        
+                        // Verify the hash is visible in the address bar
+                        setTimeout(() => {
+                            if (window.location.hash === hashUrl) {
+                                addResult('🎉 SUCCESS! Hash URL is visible in browser address bar', 'success');
+                                addResult(`Current hash: <code>${window.location.hash}</code>`, 'success');
+                                
+                                // Test if a hash change event would fire (simulating navigation)
+                                addResult('Hash change event would fire for form auto-population', 'success');
+                            } else {
+                                addResult('❌ FAILED: Hash URL not properly set', 'error');
+                            }
+                        }, 100);
+                    }, 100);
+                } else {
+                    addResult('❌ Date pattern not matched', 'error');
+                }
+            }, 100);
+        }
+
+        function openRealPage() {
+            addResult('🔗 Opening real index.html page with hash URL...', 'info');
+            const testUrl = './index.html#/02-03-2004/Sumiya';
+            addResult(`Target URL: <div class="url-box">${testUrl}</div>`, 'info');
+            window.open(testUrl, '_blank');
+        }
+
+        // Monitor hash changes
+        window.addEventListener('hashchange', function() {
+            addResult(`📍 Hash changed! New hash: <code>${window.location.hash}</code>`, 'success');
+            updateUrlState();
+        });
+
+        // Initialize
+        updateUrlState();
+        addResult('🟢 Test page ready. Click "Simulate" to test the URL handling.', 'info');
+    </script>
+</body>
+</html>
