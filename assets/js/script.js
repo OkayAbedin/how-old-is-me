@@ -160,19 +160,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 300);
         }, 4000);
-    };
-
-    // DOM Elements
+    };    // DOM Elements
     const form = document.getElementById('ageForm');
     const resultDiv = document.getElementById('result');
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     const shareBtn = document.getElementById('shareBtn');
-    const printBtn = document.getElementById('printBtn');
     const themeToggle = document.getElementById('themeToggle');
-    const saveProfileBtn = document.getElementById('saveProfileBtn');
-    const profilesList = document.getElementById('profilesList');
-    const savedProfiles = document.getElementById('savedProfiles');
     const shareableUrlSection = document.getElementById('shareableUrlSection');
     const shareableUrlInput = document.getElementById('shareableUrl');
     const copyUrlBtn = document.getElementById('copyUrlBtn');
@@ -192,9 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         events: {},
         births: {}
     };
-    
-    // Get saved profiles from local storage
-    let profiles = JSON.parse(localStorage.getItem('profiles')) || [];    // Check for date in URL and auto-populate form
+      // Check for date in URL and auto-populate form
     const urlDate = parseUrlForDate();
     if (urlDate) {
         console.log('URL date parsed:', urlDate);
@@ -694,15 +686,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Sort by age
         return milestones.sort((a, b) => a.age - b.age);
-    };
-
-    // Form submission handler
+    };    // Form submission handler
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const birthdate = new Date(document.getElementById('birthdate').value);
         const today = new Date();
         const name = document.getElementById('name').value || 'You';
-        const region = document.getElementById('region').value;
         
         if (birthdate > today) {
             // Add subtle validation feedback
@@ -749,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dayOfWeek = birthdate.toLocaleString('en-us', { weekday: 'long' });
             const daysUntilBirthday = getNextBirthday(birthdate);
             const moonPhase = getMoonPhase(birthdate);
-            const lifeExpectancy = calculateLifeExpectancy(birthdate, region);
+            const lifeExpectancy = calculateLifeExpectancy(birthdate, 'global');
             const lifeStats = calculateLifeStats(timeUnits);
             const ageComparisons = getHistoricalComparisons(timeUnits.years);
             const lifeTimeline = generateLifeTimeline(birthdate.getFullYear(), timeUnits.years);
@@ -957,153 +946,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.execCommand('copy');
                 copyUrlBtn.innerHTML = '<i class="fas fa-check"></i>';
                 setTimeout(() => {
-                    copyUrlBtn.innerHTML = '<i class="fas fa-copy"></i>';
-                }, 1500);
+                    copyUrlBtn.innerHTML = '<i class="fas fa-copy"></i>';                }, 1500);
             }
         }
     });
-
-    // Print functionality
-    printBtn.addEventListener('click', () => {
-        exportResults();
-    });
-
-    // Export results to PDF
-    const exportResults = () => {
-        // Create a hidden section to print
-        const printSection = document.createElement('div');
-        printSection.className = 'print-section';
-        
-        // Get content from all tabs
-        const basicContent = document.getElementById('basicTab').innerHTML;
-        const detailedContent = document.getElementById('detailedTab').innerHTML;
-        const astroContent = document.getElementById('astroTab').innerHTML;
-        const historyContent = document.getElementById('historyTab').innerHTML;
-        const lifeContent = document.getElementById('lifeTab').innerHTML;
-        
-        // Build the content
-        printSection.innerHTML = `
-            <div class="print-header">
-                <h1>How Old Is Me - Results</h1>
-                <p>Generated on ${new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                })}</p>
-            </div>
-            <div class="print-content">
-                <h2>Basic Information</h2>
-                ${basicContent}
-                <h2>Detailed Breakdown</h2>
-                ${detailedContent}
-                <h2>Astrological Information</h2>
-                ${astroContent}
-                <h2>Historical Context</h2>
-                ${historyContent}
-                <h2>Life Statistics</h2>
-                ${lifeContent}
-            </div>
-        `;
-        
-        // Add to document temporarily
-        document.body.appendChild(printSection);
-        
-        // Print the section
-        window.print();
-        
-        // Remove the section after printing
-        document.body.removeChild(printSection);
-    };
-
-    // Save profile functionality
-    saveProfileBtn.addEventListener('click', () => {
-        const name = document.getElementById('name').value || 'Unnamed Profile';
-        const birthdate = document.getElementById('birthdate').value;
-        const region = document.getElementById('region').value;
-        
-        if (!birthdate) {
-            alert('Please enter a birthdate first');
-            return;
-        }
-        
-        // Create profile object
-        const profile = {
-            id: Date.now(),
-            name,
-            birthdate,
-            region,
-            saved: new Date().toISOString()
-        };
-        
-        // Add to profiles array
-        profiles.push(profile);
-        localStorage.setItem('profiles', JSON.stringify(profiles));
-        
-        // Update profiles display
-        renderProfiles();
-        savedProfiles.hidden = false;
-    });
-
-    // Render saved profiles
-    const renderProfiles = () => {
-        if (profiles.length === 0) {
-            savedProfiles.hidden = true;
-            return;
-        }
-        
-        profilesList.innerHTML = '';
-        profiles.forEach(profile => {
-            const profileDate = new Date(profile.birthdate);
-            const formattedDate = profileDate.toLocaleDateString();
-            
-            const profileCard = document.createElement('div');
-            profileCard.className = 'profile-card';
-            profileCard.innerHTML = `
-                <h4>${profile.name}</h4>
-                <p>${formattedDate}</p>
-                <div class="profile-actions">
-                    <button class="profile-action-btn load-profile" data-id="${profile.id}">
-                        <i class="fas fa-upload"></i>
-                    </button>
-                    <button class="profile-action-btn delete-profile" data-id="${profile.id}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            profilesList.appendChild(profileCard);
-        });
-        
-        // Add event listeners to profile action buttons
-        document.querySelectorAll('.load-profile').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(e.currentTarget.dataset.id);
-                const profile = profiles.find(p => p.id === id);
-                if (profile) {
-                    document.getElementById('birthdate').value = profile.birthdate;
-                    document.getElementById('name').value = profile.name;
-                    document.getElementById('region').value = profile.region;
-                    form.dispatchEvent(new Event('submit'));
-                }
-            });
-        });
-        
-        document.querySelectorAll('.delete-profile').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(e.currentTarget.dataset.id);
-                if (confirm('Are you sure you want to delete this profile?')) {
-                    profiles = profiles.filter(p => p.id !== id);
-                    localStorage.setItem('profiles', JSON.stringify(profiles));
-                    renderProfiles();
-                }
-            });
-        });
-        
-        savedProfiles.hidden = false;
-    };
-    
-    // Initial render of saved profiles on page load
-    renderProfiles();
 }); // End of DOMContentLoaded event listener
