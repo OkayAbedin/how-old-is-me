@@ -338,22 +338,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Add subtle visual hint for clickable area */
-input[type="date"]::before {
-    content: '📅';
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    opacity: 0.6;
-    font-size: 14px;
-}
-
-[data-theme="light"] input[type="date"]::before {
-    opacity: 0.4;
-}
-
 button.submit-btn {
     width: 100%;
     padding: 1rem;
