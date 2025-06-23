@@ -56,14 +56,9 @@
         
         <h1>How Old Is Me?</h1>
         <p class="tagline">Discover your age in fascinating detail</p>
-        
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="basic">Basic</button>
-            <button class="tab-btn" data-tab="detailed">Detailed</button>
-            <button class="tab-btn" data-tab="astro">Astrology</button>
-            <button class="tab-btn" data-tab="history">History</button>
-            <button class="tab-btn" data-tab="life">Life Stats</button>
-        </div>        <form id="ageForm" aria-label="Age calculation form">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="basic">Age Result</button>
+        </div><form id="ageForm" aria-label="Age calculation form">
             <div class="form-group">
                 <label for="birthdate">Enter your birthdate:</label>
                 <input 
@@ -83,93 +78,18 @@
                     placeholder="Enter your name"
                 >
             </div>
-            <div class="form-group region-selector">
-                <label for="region">Your Region (for life expectancy):</label>
-                <select id="region" name="region">
-                    <option value="global">Global Average</option>
-                    <option value="america">North America</option>
-                    <option value="europe">Europe</option>
-                    <option value="asia">Asia</option>
-                    <option value="africa">Africa</option>
-                    <option value="oceania">Oceania</option>
-                </select>
-            </div>
             <button type="submit" class="submit-btn">Calculate Age</button>        </form>        <div id="result" aria-live="polite"></div>
 
         <div class="result-tabs">
             <div class="tab-content" id="basicTab">
                 <!-- Basic age result will be inserted here -->
             </div>
-
-            <div class="tab-content" id="detailedTab" hidden>
-                <div class="time-units">
-                    <h3>Your age in different units</h3>
-                    <div id="yearsMonthsDaysResult"></div>
-                    <div id="monthsResult"></div>
-                    <div id="weeksResult"></div>
-                    <div id="daysResult"></div>
-                    <div id="hoursResult"></div>
-                    <div id="minutesResult"></div>
-                    <div id="secondsResult"></div>
-                </div>
-                <div class="age-visualization">
-                    <canvas id="ageVisual" width="300" height="200"></canvas>
-                </div>
-            </div>
-
-            <div class="tab-content" id="astroTab" hidden>
-                <div class="astro-info">
-                    <h3>Astrological Information</h3>
-                    <div id="zodiacResult"></div>
-                    <div id="zodiacDescription"></div>
-                    <div id="dayOfWeekResult"></div>
-                    <div id="nextBirthdayResult"></div>
-                    <div id="moonPhaseResult"></div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="historyTab" hidden>
-                <div class="history-info">
-                    <h3>Historical Events from Your Birth Year</h3>
-                    <div id="historicalEvents" class="events-list"></div>
-                    <div id="famousBirthdays" class="celebrity-list">
-                        <h4>Famous People Who Share Your Birthday</h4>
-                        <ul id="celebrityList"></ul>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="lifeTab" hidden>
-                <div class="life-stats">
-                    <h3>Life Statistics</h3>
-                    <div class="life-expectancy-container">
-                        <h4>Life Expectancy</h4>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="lifeProgress"></div>
-                        </div>
-                        <p id="lifeExpectancy"></p>
-                    </div>
-                    <div id="sleepStats"></div>
-                    <div id="heartbeatsStats"></div>
-                    <div id="breathsStats"></div>
-                </div>
-            </div>
         </div>        <div class="actions">
-            <button id="saveProfileBtn" class="action-btn">
-                <i class="fas fa-save"></i>
-                Save Profile
-            </button>
             <button id="shareBtn" class="action-btn">
                 <i class="fas fa-share-alt"></i>
                 Share
             </button>
-            <button id="printBtn" class="action-btn">
-                <i class="fas fa-print"></i>
-                Print
-            </button>
-        </div>
-
-        <div id="shareableUrlSection" class="shareable-url-section" hidden>
+        </div>        <div id="shareableUrlSection" class="shareable-url-section" hidden>
             <div class="url-display">
                 <label for="shareableUrl">Shareable URL:</label>
                 <div class="url-input-container">
@@ -180,11 +100,7 @@
                 </div>
             </div>
         </div>
-        
-        <div id="savedProfiles" class="saved-profiles" hidden>
-            <h3>Saved Profiles</h3>
-            <div id="profilesList" class="profiles-list"></div>
-        </div>    </main>
+    </main>
     
     <footer>
         <p>Made with <i class="fas fa-heart"></i> by <a href="https://bio.link/minhazabedin">Minhaz</a></p>
