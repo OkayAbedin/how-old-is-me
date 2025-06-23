@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Sharing Test with Names - How Old Is Me</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-link {
+            display: block;
+            margin: 10px 0;
+            padding: 15px;
+            background: #f4f4f4;
+            text-decoration: none;
+            color: #333;
+            border-radius: 5px;
+            border-left: 4px solid #007cba;
+        }
+        .test-link:hover {
+            background: #e9e9e9;
+        }
+        .description {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .format-example {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #00bcd4;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Sharing Test with Names - How Old Is Me</h1>
+    <p>Now supporting both date and name in the URL!</p>
+    
+    <div class="format-example">
+        <h3>📋 New URL Format:</h3>
+        <p><strong>DD-MM-YYYY/Name</strong> format is now supported:</p>
+        <ul>
+            <li><code>yoursite.com/how-old-is-me/03-02-2001/Minhaz</code></li>
+            <li><code>yoursite.com/how-old-is-me/28-11-2001</code> (date only)</li>
+        </ul>
+    </div>
+    
+    <h2>Test Links with Names:</h2>
+    
+    <a href="index.html" class="test-link">
+        <strong>Normal Page (no parameters)</strong>
+        <div class="description">Regular page load without any date or name parameters</div>
+    </a>
+    
+    <a href="index.html/03-02-2001/Minhaz" class="test-link">
+        <strong>Birthday: February 3, 2001 - Name: Minhaz</strong>
+        <div class="description">URL: index.html/03-02-2001/Minhaz</div>
+    </a>
+    
+    <a href="index.html/28-11-2001/John%20Doe" class="test-link">
+        <strong>Birthday: November 28, 2001 - Name: John Doe</strong>
+        <div class="description">URL: index.html/28-11-2001/John%20Doe (URL encoded spaces)</div>
+    </a>
+    
+    <a href="index.html/15-06-1995/Sarah" class="test-link">
+        <strong>Birthday: June 15, 1995 - Name: Sarah</strong>
+        <div class="description">URL: index.html/15-06-1995/Sarah</div>
+    </a>
+    
+    <a href="index.html/01-01-2000" class="test-link">
+        <strong>Birthday: January 1, 2000 (no name)</strong>
+        <div class="description">URL: index.html/01-01-2000 (name field will remain empty)</div>
+    </a>
+    
+    <a href="index.html/25-12-1990/Maria-Lopez" class="test-link">
+        <strong>Birthday: December 25, 1990 - Name: Maria-Lopez</strong>
+        <div class="description">URL: index.html/25-12-1990/Maria-Lopez (names with hyphens)</div>
+    </a>
+
+    <h2>✨ New Features:</h2>
+    <ul>
+        <li>✅ <strong>DD-MM-YYYY Format:</strong> Consistent date format throughout the app</li>
+        <li>✅ <strong>Name Support:</strong> URLs can include names: <code>/03-02-2001/Minhaz</code></li>
+        <li>✅ <strong>Auto-Population:</strong> Both date and name fields auto-fill from URL</li>
+        <li>✅ <strong>URL Generation:</strong> Manual entry creates URLs with both date and name</li>
+        <li>✅ <strong>Smart Validation:</strong> Names are validated and URL-encoded/decoded properly</li>
+        <li>✅ <strong>Backward Compatibility:</strong> URLs without names still work perfectly</li>
+    </ul>
+
+    <h2>🔧 Technical Details:</h2>
+    <ul>
+        <li><strong>Date Format:</strong> DD-MM-YYYY (e.g., 03-02-2001)</li>
+        <li><strong>Name Encoding:</strong> Spaces become %20, special characters are encoded</li>
+        <li><strong>Name Validation:</strong> Only letters, spaces, hyphens, and apostrophes allowed</li>
+        <li><strong>URL Structure:</strong> <code>/date/name</code> or just <code>/date</code></li>
+        <li><strong>Max Name Length:</strong> 50 characters</li>
+    </ul>
+
+    <h2>How to test:</h2>
+    <ol>
+        <li><strong>Click any link above</strong> to see auto-population in action</li>
+        <li><strong>Manually enter a date and name</strong> to see URL generation</li>
+        <li><strong>Use the share button</strong> to get the complete URL</li>
+        <li><strong>Use browser back/forward</strong> to test navigation</li>
+    </ol>
+
+    <p><a href="index.html" style="background: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">← Back to Age Calculator</a></p>
+</body>
+</html>

@@ -1,48 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {    // URL-based date sharing functionality
     const parseUrlForDate = () => {
         const path = window.location.pathname;
-        const pathParts = path.split('/');
+        const pathParts = path.split('/').filter(part => part.length > 0);
         
-        // Look for date patterns (DD-MM-YYYY, MM-DD-YYYY, YYYY-MM-DD)
-        const datePatterns = [
-            /^(\d{1,2})-(\d{1,2})-(\d{4})$/, // DD-MM-YYYY or MM-DD-YYYY
-            /^(\d{4})-(\d{1,2})-(\d{1,2})$/, // YYYY-MM-DD
-        ];
+        // Look for date pattern DD-MM-YYYY (enforcing this format)
+        const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
         
-        for (const part of pathParts) {
-            for (const pattern of datePatterns) {
-                const match = part.match(pattern);
-                if (match) {
-                    let day, month, year;
+        for (let i = 0; i < pathParts.length; i++) {
+            const part = pathParts[i];
+            const match = part.match(datePattern);
+            if (match) {
+                const [, day, month, year] = match;
+                
+                // Validate the date (DD-MM-YYYY format)
+                const date = new Date(year, month - 1, day);
+                if (date.getFullYear() == year && 
+                    date.getMonth() == month - 1 && 
+                    date.getDate() == day &&
+                    date <= new Date()) { // Must be in the past
                     
-                    if (pattern === datePatterns[0]) {
-                        // DD-MM-YYYY format (assuming DD-MM-YYYY for now)
-                        [, day, month, year] = match;
-                    } else {
-                        // YYYY-MM-DD format
-                        [, year, month, day] = match;
+                    // Check if there's a name in the next part
+                    let name = null;
+                    if (i + 1 < pathParts.length) {
+                        const namePart = pathParts[i + 1];
+                        // Decode URL encoding and validate name (letters, spaces, hyphens, apostrophes)
+                        const decodedName = decodeURIComponent(namePart);
+                        if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                            name = decodedName;
+                        }
                     }
                     
-                    // Validate the date
-                    const date = new Date(year, month - 1, day);
-                    if (date.getFullYear() == year && 
-                        date.getMonth() == month - 1 && 
-                        date.getDate() == day &&
-                        date <= new Date()) { // Must be in the past
-                        return {
-                            day: parseInt(day),
-                            month: parseInt(month),
-                            year: parseInt(year),
-                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
-                        };
-                    }
+                    return {
+                        day: parseInt(day),
+                        month: parseInt(month),
+                        year: parseInt(year),
+                        name: name,
+                        dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                    };
                 }
             }
         }
         return null;
-    };
-
-    const generateShareableUrl = (birthdate) => {
+    };    const generateShareableUrl = (birthdate, name = null) => {
         if (!birthdate) return window.location.origin + window.location.pathname;
         
         const day = birthdate.getDate().toString().padStart(2, '0');
@@ -50,11 +49,25 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
         const year = birthdate.getFullYear();
         
         const baseUrl = window.location.origin;
-        const basePath = window.location.pathname.replace(/\/\d{1,2}-\d{1,2}-\d{4}\/?$/, '');
+        let basePath = window.location.pathname.replace(/\/\d{1,2}-\d{1,2}-\d{4}(\/[^\/]*)?$/, '');
         
-        return `${baseUrl}${basePath}/${day}-${month}-${year}`;
-    };    const updateUrlWithDate = (birthdate) => {
-        const newUrl = generateShareableUrl(birthdate);
+        // Ensure basePath doesn't end with a slash to avoid double slashes
+        basePath = basePath.replace(/\/$/, '');
+        
+        // Use DD-MM-YYYY format consistently
+        let urlPath = `${basePath}/${day}-${month}-${year}`;
+        
+        // Add name if provided
+        if (name && name.trim()) {
+            const cleanName = name.trim().replace(/[^a-zA-Z\s\-'\.]/g, '');
+            if (cleanName) {
+                urlPath += `/${encodeURIComponent(cleanName)}`;
+            }
+        }
+        
+        return `${baseUrl}${urlPath}`;
+    };const updateUrlWithDate = (birthdate, name = null) => {
+        const newUrl = generateShareableUrl(birthdate, name);
         // Update URL without reloading the page
         window.history.pushState({}, '', newUrl);
         
@@ -131,23 +144,27 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
     };
     
     // Get saved profiles from local storage
-    let profiles = JSON.parse(localStorage.getItem('profiles')) || [];
-
-    // Check for date in URL and auto-populate form
+    let profiles = JSON.parse(localStorage.getItem('profiles')) || [];    // Check for date in URL and auto-populate form
     const urlDate = parseUrlForDate();
     if (urlDate) {
         document.getElementById('birthdate').value = urlDate.dateString;
+        if (urlDate.name) {
+            document.getElementById('name').value = urlDate.name;
+        }
         // Auto-submit the form to show results immediately
         setTimeout(() => {
             form.dispatchEvent(new Event('submit'));
         }, 100);
-    }
-
-    // Handle browser back/forward navigation
+    }    // Handle browser back/forward navigation
     window.addEventListener('popstate', () => {
         const urlDate = parseUrlForDate();
         if (urlDate) {
             document.getElementById('birthdate').value = urlDate.dateString;
+            if (urlDate.name) {
+                document.getElementById('name').value = urlDate.name;
+            } else {
+                document.getElementById('name').value = '';
+            }
             setTimeout(() => {
                 form.dispatchEvent(new Event('submit'));
             }, 100);
@@ -588,11 +605,11 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
                 birthdateInput.classList.remove('invalid-input');
             }, 3000);
             
-            return;
-        }
+            return;        }
 
-        // Update URL with the entered date
-        updateUrlWithDate(birthdate);
+        // Update URL with the entered date and name
+        const enteredName = document.getElementById('name').value;
+        updateUrlWithDate(birthdate, enteredName);
 
         try {
             // Calculate basic age
@@ -766,13 +783,16 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
             // Just log the error but don't show it to the user
             console.error('Error calculating age:', error);
             // Clear any existing error message
-            resultDiv.innerHTML = '';
-        }
-    });    // Share functionality
+            resultDiv.innerHTML = '';        }
+    });
+
+    // Share functionality
     shareBtn.addEventListener('click', async () => {
         const birthdateInput = document.getElementById('birthdate');
+        const nameInput = document.getElementById('name');
         const birthdate = birthdateInput.value ? new Date(birthdateInput.value) : null;
-        const shareUrl = generateShareableUrl(birthdate);
+        const name = nameInput.value || null;
+        const shareUrl = generateShareableUrl(birthdate, name);
         const text = document.querySelector('.age-text')?.textContent || '';
         const shareText = `${text}\n\nCalculate your age too: ${shareUrl}`;
         
@@ -791,11 +811,12 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
                     .catch(err => console.error('Copy failed:', err));
             }
         } else {
-            navigator.clipboard.writeText(shareUrl)
-                .then(() => alert('Shareable link copied to clipboard!'))
+            navigator.clipboard.writeText(shareUrl)                .then(() => alert('Shareable link copied to clipboard!'))
                 .catch(err => console.error('Copy failed:', err));
         }
-    });// Copy URL functionality
+    });
+
+    // Copy URL functionality
     copyUrlBtn.addEventListener('click', async () => {
         const url = shareableUrlInput.value;
         if (url) {

@@ -38,11 +38,12 @@ A modern, elegant age calculator web app with detailed time breakdowns, astrolog
 - **Accessible**: Designed with accessibility in mind
 
 ### 🔗 URL Sharing Feature
-- **Direct Date Links**: Share URLs like `yoursite.com/how-old-is-me/28-11-2001`
-- **Auto-Population**: Automatically fills and calculates age from URL
-- **Smart Parsing**: Supports DD-MM-YYYY and YYYY-MM-DD formats
-- **URL Generation**: Creates shareable links when dates are entered manually
+- **Direct Date Links**: Share URLs like `yoursite.com/how-old-is-me/03-02-2001/Minhaz`
+- **Auto-Population**: Automatically fills date and name fields from URL
+- **Smart Parsing**: Supports DD-MM-YYYY format consistently throughout the app
+- **URL Generation**: Creates shareable links when dates/names are entered manually
 - **Copy Functionality**: One-click URL copying with visual feedback
+- **Name Support**: Include names in URLs for personalized sharing
 
 ## 🛠️ Technology Stack
 
@@ -116,16 +117,17 @@ The URL sharing feature allows for easy sharing of specific birth dates:
 
 ### URL Formats
 ```
-yoursite.com/how-old-is-me/28-11-2001  # November 28, 2001
-yoursite.com/how-old-is-me/15-06-1995  # June 15, 1995
-yoursite.com/how-old-is-me/01-01-2000  # January 1, 2000
+yoursite.com/how-old-is-me/03-02-2001/Minhaz  # February 3, 2001 - Name: Minhaz
+yoursite.com/how-old-is-me/15-06-1995/Sarah   # June 15, 1995 - Name: Sarah
+yoursite.com/how-old-is-me/01-01-2000         # January 1, 2000 - No name
 ```
 
 ### How it works:
-1. **Share a specific age**: Enter a birthdate manually, and the URL automatically updates
-2. **Direct access**: Anyone clicking the URL sees the age calculation immediately
-3. **Copy & Share**: Use the built-in copy button to share the URL
-4. **Auto-calculation**: No need to re-enter the date - it's calculated automatically
+1. **Share with name**: Enter a birthdate and name, URL automatically updates to `/DD-MM-YYYY/Name`
+2. **Share date only**: Enter just a birthdate, URL becomes `/DD-MM-YYYY`
+3. **Direct access**: Anyone clicking the URL sees the age calculation immediately with pre-filled data
+4. **Copy & Share**: Use the built-in copy button to share the complete URL
+5. **Auto-calculation**: No need to re-enter data - everything loads automatically
 
 ## 📱 Browser Compatibility
 
