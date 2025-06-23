@@ -1,0 +1,10 @@
+# Apache .htaccess file for client-side routing
+RewriteEngine On
+
+# Handle date patterns (DD-MM-YYYY) with optional names
+RewriteRule ^(\d{1,2}-\d{1,2}-\d{4})(/.*)?$ index.html#/$1$2 [R=302,L]
+
+# Fallback: serve index.html for any route that doesn't exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.html [L]

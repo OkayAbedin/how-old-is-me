@@ -1,7 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {    // URL-based date sharing functionality
     const parseUrlForDate = () => {
-        const path = window.location.pathname;
-        const pathParts = path.split('/').filter(part => part.length > 0);
+        let path = window.location.pathname;
+        let pathParts = path.split('/').filter(part => part.length > 0);
+        
+        // Also check hash for compatibility with servers that don't support client-side routing
+        if (window.location.hash && window.location.hash.startsWith('#/')) {
+            const hashPath = window.location.hash.substring(2); // Remove #/
+            pathParts = hashPath.split('/').filter(part => part.length > 0);
+        }
         
         // Look for date pattern DD-MM-YYYY (enforcing this format)
         const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
@@ -66,10 +72,57 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
         }
         
         return `${baseUrl}${urlPath}`;
-    };const updateUrlWithDate = (birthdate, name = null) => {
-        const newUrl = generateShareableUrl(birthdate, name);
-        // Update URL without reloading the page
-        window.history.pushState({}, '', newUrl);
+    };
+
+    // Alternative URL generator for hash-based routing (fallback)
+    const generateHashUrl = (birthdate, name = null) => {
+        if (!birthdate) return window.location.origin + window.location.pathname;
+        
+        const day = birthdate.getDate().toString().padStart(2, '0');
+        const month = (birthdate.getMonth() + 1).toString().padStart(2, '0');
+        const year = birthdate.getFullYear();
+        
+        const baseUrl = window.location.origin;
+        let basePath = window.location.pathname.replace(/\/\d{1,2}-\d{1,2}-\d{4}(\/[^\/]*)?$/, '');
+        basePath = basePath.replace(/\/$/, '');
+        
+        let hashPath = `${day}-${month}-${year}`;
+        
+        if (name && name.trim()) {
+            const cleanName = name.trim().replace(/[^a-zA-Z\s\-'\.]/g, '');
+            if (cleanName) {
+                hashPath += `/${encodeURIComponent(cleanName)}`;
+            }
+        }
+        
+        return `${baseUrl}${basePath}#/${hashPath}`;
+    };    const updateUrlWithDate = (birthdate, name = null) => {
+        // For local development, use hash-based URLs
+        // For production with proper server config, use clean URLs
+        const isLocalHost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.protocol === 'file:';
+        
+        let newUrl;
+        if (isLocalHost) {
+            newUrl = generateHashUrl(birthdate, name);
+            // Update hash without page reload
+            const day = birthdate.getDate().toString().padStart(2, '0');
+            const month = (birthdate.getMonth() + 1).toString().padStart(2, '0');
+            const year = birthdate.getFullYear();
+            let hashPath = `${day}-${month}-${year}`;
+            if (name && name.trim()) {
+                const cleanName = name.trim().replace(/[^a-zA-Z\s\-'\.]/g, '');
+                if (cleanName) {
+                    hashPath += `/${encodeURIComponent(cleanName)}`;
+                }
+            }
+            window.location.hash = `#/${hashPath}`;
+        } else {
+            newUrl = generateShareableUrl(birthdate, name);
+            // Update URL without reloading the page
+            window.history.pushState({}, '', newUrl);
+        }
         
         // Update shareable URL display
         shareableUrlInput.value = newUrl;
@@ -174,6 +227,22 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
             document.getElementById('name').value = '';
             resultDiv.innerHTML = '';
             shareableUrlSection.hidden = true;
+        }
+    });
+
+    // Handle hash changes for hash-based routing
+    window.addEventListener('hashchange', () => {
+        const urlDate = parseUrlForDate();
+        if (urlDate) {
+            document.getElementById('birthdate').value = urlDate.dateString;
+            if (urlDate.name) {
+                document.getElementById('name').value = urlDate.name;
+            } else {
+                document.getElementById('name').value = '';
+            }
+            setTimeout(() => {
+                form.dispatchEvent(new Event('submit'));
+            }, 100);
         }
     });
 
@@ -782,8 +851,9 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
         } catch (error) {
             // Just log the error but don't show it to the user
             console.error('Error calculating age:', error);
-            // Clear any existing error message
-            resultDiv.innerHTML = '';        }
+            // Clear any existing error message            resultDiv.innerHTML = '';
+            shareableUrlSection.hidden = true;
+        }
     });
 
     // Share functionality
@@ -792,7 +862,13 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
         const nameInput = document.getElementById('name');
         const birthdate = birthdateInput.value ? new Date(birthdateInput.value) : null;
         const name = nameInput.value || null;
-        const shareUrl = generateShareableUrl(birthdate, name);
+        
+        // Use hash URLs for localhost, clean URLs for production
+        const isLocalHost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.protocol === 'file:';
+        
+        const shareUrl = isLocalHost ? generateHashUrl(birthdate, name) : generateShareableUrl(birthdate, name);
         const text = document.querySelector('.age-text')?.textContent || '';
         const shareText = `${text}\n\nCalculate your age too: ${shareUrl}`;
         

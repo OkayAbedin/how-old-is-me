@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting - How Old Is Me</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .redirect-container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .manual-link {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        .manual-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <h2>🔄 Redirecting to Age Calculator</h2>
+        <div class="spinner"></div>
+        <p>Processing your age calculation request...</p>
+        <p id="extracted-info"></p>
+        <a href="index.html" class="manual-link">Click here if not redirected automatically</a>
+    </div>
+
+    <script>
+        // Extract date and name from current URL
+        function extractFromUrl() {
+            const path = window.location.pathname;
+            const pathParts = path.split('/').filter(part => part.length > 0);
+            
+            // Look for date pattern DD-MM-YYYY
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                const match = part.match(datePattern);
+                if (match) {
+                    const [, day, month, year] = match;
+                    
+                    // Validate the date
+                    const date = new Date(year, month - 1, day);
+                    if (date.getFullYear() == year && 
+                        date.getMonth() == month - 1 && 
+                        date.getDate() == day &&
+                        date <= new Date()) {
+                        
+                        let name = null;
+                        if (i + 1 < pathParts.length) {
+                            const namePart = pathParts[i + 1];
+                            const decodedName = decodeURIComponent(namePart);
+                            if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                                name = decodedName;
+                            }
+                        }
+                        
+                        return {
+                            day: parseInt(day),
+                            month: parseInt(month),
+                            year: parseInt(year),
+                            name: name,
+                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Perform redirect
+        const urlData = extractFromUrl();
+        if (urlData) {
+            const infoEl = document.getElementById('extracted-info');
+            if (urlData.name) {
+                infoEl.textContent = `Date: ${urlData.day}-${urlData.month}-${urlData.year}, Name: ${urlData.name}`;
+            } else {
+                infoEl.textContent = `Date: ${urlData.day}-${urlData.month}-${urlData.year}`;
+            }
+            
+            // Redirect using hash-based routing
+            let redirectUrl = `index.html#/${urlData.day.toString().padStart(2, '0')}-${urlData.month.toString().padStart(2, '0')}-${urlData.year}`;
+            if (urlData.name) {
+                redirectUrl += `/${encodeURIComponent(urlData.name)}`;
+            }
+            
+            setTimeout(() => {
+                window.location.href = redirectUrl;
+            }, 2000);
+        } else {
+            // No valid date found, redirect to main page
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

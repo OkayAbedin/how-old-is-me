@@ -1,0 +1,13 @@
+# Netlify redirects file
+# Redirect date patterns to hash-based URLs
+/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]           /index.html#/:splat   200
+/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/*         /index.html#/:splat   200
+/[0-9]-[0-9]-[0-9][0-9][0-9][0-9]                     /index.html#/:splat   200
+/[0-9]-[0-9]-[0-9][0-9][0-9][0-9]/*                   /index.html#/:splat   200
+/[0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]                /index.html#/:splat   200
+/[0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/*              /index.html#/:splat   200
+/[0-9][0-9]-[0-9]-[0-9][0-9][0-9][0-9]                /index.html#/:splat   200
+/[0-9][0-9]-[0-9]-[0-9][0-9][0-9][0-9]/*              /index.html#/:splat   200
+
+# Fallback for any other route
+/*    /index.html   200
