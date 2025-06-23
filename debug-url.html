@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Debug Test</title>
+</head>
+<body>
+    <h1>URL Debug Test</h1>
+    <div id="output"></div>
+    
+    <script>
+        // Copy the exact parseUrlForDate function from script.js
+        const parseUrlForDate = () => {
+            let path = window.location.pathname;
+            let pathParts = path.split('/').filter(part => part.length > 0);
+            
+            // Also check hash for compatibility with servers that don't support client-side routing
+            if (window.location.hash && window.location.hash.startsWith('#/')) {
+                const hashPath = window.location.hash.substring(2); // Remove #/
+                pathParts = hashPath.split('/').filter(part => part.length > 0);
+            }
+              // Look for date pattern MM-DD-YYYY (for URLs)
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                const match = part.match(datePattern);
+                if (match) {
+                    const [, month, day, year] = match;
+                      // Validate the date (MM-DD-YYYY format from URL)
+                    const date = new Date(year, month - 1, day);
+                    if (date.getFullYear() == year && 
+                        date.getMonth() == month - 1 && 
+                        date.getDate() == day &&
+                        date <= new Date()) { // Must be in the past
+                        
+                        // Check if there's a name in the next part
+                        let name = null;
+                        if (i + 1 < pathParts.length) {
+                            const namePart = pathParts[i + 1];
+                            // Decode URL encoding and validate name (letters, spaces, hyphens, apostrophes)
+                            const decodedName = decodeURIComponent(namePart);
+                            if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                                name = decodedName;
+                            }
+                        }
+                        
+                        return {
+                            day: parseInt(day),
+                            month: parseInt(month),
+                            year: parseInt(year),
+                            name: name,
+                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        };
+                    }
+                }
+            }
+            return null;
+        };
+        
+        // Test the function
+        const result = parseUrlForDate();
+        const output = document.getElementById('output');
+        
+        output.innerHTML = `
+            <p><strong>Current URL:</strong> ${window.location.href}</p>
+            <p><strong>Pathname:</strong> ${window.location.pathname}</p>
+            <p><strong>Hash:</strong> ${window.location.hash}</p>
+            <p><strong>Parse Result:</strong> ${result ? JSON.stringify(result, null, 2) : 'null'}</p>
+        `;
+        
+        console.log('URL parsing result:', result);
+    </script>
+</body>
+</html>

@@ -1,17 +1,21 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Add early URL parsing to handle direct links immediately
+document.addEventListener('DOMContentLoaded', () => {    // Add early URL parsing to handle direct links immediately
     const handleDirectUrl = () => {
         const path = window.location.pathname;
         const hash = window.location.hash;
         
+        console.log('handleDirectUrl called:', { path, hash });
+        
         // If we have a hash, prioritize that
         if (hash && hash.startsWith('#/')) {
+            console.log('Hash detected, skipping direct URL handling');
             return;
         }
         
         // Check if the current path contains a date pattern
         const pathParts = path.split('/').filter(part => part.length > 0);
         const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+        
+        console.log('Path parts:', pathParts);
         
         for (let i = 0; i < pathParts.length; i++) {
             const part = pathParts[i];
@@ -23,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
+        
+        console.log('No date pattern found in path');
     };
     
     // Call this immediately
@@ -223,16 +229,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlDate = parseUrlForDate();
     if (urlDate) {
         console.log('URL date parsed:', urlDate);
-        document.getElementById('birthdate').value = urlDate.dateString;
-        if (urlDate.name) {
-            document.getElementById('name').value = urlDate.name;
+        const birthdateInput = document.getElementById('birthdate');
+        const nameInput = document.getElementById('name');
+        
+        if (birthdateInput && nameInput) {
+            birthdateInput.value = urlDate.dateString;
+            if (urlDate.name) {
+                nameInput.value = urlDate.name;
+            }
+            console.log('Form populated, submitting...');
+            // Auto-submit the form to show results immediately
+            setTimeout(() => {
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                    console.log('Form submitted');
+                } else {
+                    console.error('Form not found!');
+                }
+            }, 100);
+        } else {
+            console.error('Form inputs not found!', {
+                birthdate: !!birthdateInput,
+                name: !!nameInput
+            });
         }
-        // Auto-submit the form to show results immediately
-        setTimeout(() => {
-            form.dispatchEvent(new Event('submit'));
-        }, 100);
     } else {
-        console.log('No valid date found in URL:', window.location.pathname);
+        console.log('No valid date found in URL:', window.location.pathname, window.location.hash);
     }// Handle browser back/forward navigation
     window.addEventListener('popstate', () => {
         const urlDate = parseUrlForDate();
