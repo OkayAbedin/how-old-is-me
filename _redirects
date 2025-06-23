@@ -1,13 +1,3 @@
-# Netlify redirects file
-# Redirect date patterns to hash-based URLs with proper splat handling
-/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]           /index.html   200
-/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/*         /index.html   200
-/[0-9]-[0-9]-[0-9][0-9][0-9][0-9]                     /index.html   200
-/[0-9]-[0-9]-[0-9][0-9][0-9][0-9]/*                   /index.html   200
-/[0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]                /index.html   200
-/[0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/*              /index.html   200
-/[0-9][0-9]-[0-9]-[0-9][0-9][0-9][0-9]                /index.html   200
-/[0-9][0-9]-[0-9]-[0-9][0-9][0-9][0-9]/*              /index.html   200
-
-# Fallback for any other route
-/*    /index.html   200
+# This file is for Netlify, not GitHub Pages
+# GitHub Pages doesn't support server-side redirects
+# For GitHub Pages, we rely on 404.html for client-side routing

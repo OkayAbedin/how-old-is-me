@@ -2,30 +2,59 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>Redirecting...</title>
     <script>
-        // SUPER SIMPLE 404 REDIRECT
+        // GitHub Pages 404 Handler
+        // This handles direct URLs like /02-03-2004/Sumiya
+        
         const url = window.location.href;
         const path = window.location.pathname;
         
-        console.log('404 page loaded:', url);
+        console.log('404 handler - URL:', url, 'Path:', path);
         
-        // If URL contains a date pattern, redirect to hash version
-        if (path.includes('-') && path.match(/\d{1,2}-\d{1,2}-\d{4}/)) {
-            // Extract just the date and name part
-            const match = path.match(/(\/[\w-]+\/)?(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)$/);
-            if (match && match[2]) {
-                const newUrl = './index.html#/' + match[2];
-                console.log('Redirecting to:', newUrl);
-                window.location.replace(newUrl);
-                return;
+        // Extract the repository name from the path for GitHub Pages
+        // Path will be like: /how-old-is-me/02-03-2004/Sumiya
+        const pathParts = path.split('/').filter(part => part.length > 0);
+        
+        // Check if this looks like a date pattern anywhere in the path
+        const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+        let dateFound = false;
+        let redirectPath = '';
+        
+        for (let i = 0; i < pathParts.length; i++) {
+            const part = pathParts[i];
+            if (datePattern.test(part)) {
+                // Found a date! Build the redirect URL
+                const datePart = part;
+                const namePart = pathParts[i + 1] || '';
+                
+                if (namePart) {
+                    redirectPath = `${datePart}/${namePart}`;
+                } else {
+                    redirectPath = datePart;
+                }
+                
+                dateFound = true;
+                break;
             }
         }
         
-        // Default redirect
-        window.location.replace('./index.html');
+        if (dateFound) {
+            // Redirect to index.html with hash
+            const baseUrl = window.location.origin + '/how-old-is-me/';
+            const newUrl = baseUrl + 'index.html#/' + redirectPath;
+            console.log('Redirecting to:', newUrl);
+            window.location.replace(newUrl);
+        } else {
+            // No date found, just go to the main page
+            const baseUrl = window.location.origin + '/how-old-is-me/';
+            console.log('No date pattern found, redirecting to:', baseUrl);
+            window.location.replace(baseUrl);
+        }
     </script>
 </head>
 <body>
-    <h1>Redirecting...</h1>
+    <h1>Redirecting to Age Calculator...</h1>
+    <p>If you're not redirected automatically, <a href="/how-old-is-me/">click here</a>.</p>
 </body>
 </html>

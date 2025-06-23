@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub Pages URL Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 20px; border: 2px solid #ddd; border-radius: 8px; }
+        .test-result { margin: 10px 0; padding: 12px; border-left: 4px solid #ccc; background: #f9f9f9; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .info { border-left-color: #17a2b8; background: #d1ecf1; }
+        .warning { border-left-color: #ffc107; background: #fff3cd; }
+        button { padding: 12px 18px; margin: 8px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .url-box { font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px; border-radius: 4px; word-break: break-all; }
+        .github-url { background: #e8f5e8; border: 2px solid #28a745; }
+    </style>
+</head>
+<body>
+    <h1>🐙 GitHub Pages URL Handling Test</h1>
+    
+    <div class="test-section">
+        <h2>📍 Current Environment</h2>
+        <div id="environment"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 GitHub Pages Simulation Tests</h2>
+        <button onclick="test404Handler()">Test 404.html Logic</button>
+        <button onclick="testIndexHandler()">Test index.html Logic</button>
+        <button onclick="testGitHubPagesUrl()">Test Full GitHub Pages URL</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 Test Results</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let testStep = 0;
+
+        function updateEnvironment() {
+            const envDiv = document.getElementById('environment');
+            const isGitHub = window.location.hostname.includes('github.io');
+            const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost';
+            
+            envDiv.innerHTML = `
+                <div class="test-result ${isGitHub ? 'success' : 'info'}">
+                    <strong>Environment:</strong> ${isGitHub ? '🐙 GitHub Pages' : isLocal ? '💻 Local' : '🌐 Other'}
+                </div>
+                <div class="test-result info">
+                    <strong>Current URL:</strong><br>
+                    <div class="url-box">${window.location.href}</div>
+                </div>
+                <div class="test-result info">
+                    <strong>Hostname:</strong> ${window.location.hostname}<br>
+                    <strong>Pathname:</strong> ${window.location.pathname}<br>
+                    <strong>Hash:</strong> ${window.location.hash || '(none)'}
+                </div>
+            `;
+        }
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>Step ${++testStep}:</strong> ${message}`;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            testStep = 0;
+            updateEnvironment();
+        }
+
+        function test404Handler() {
+            addResult('🧪 Testing 404.html logic for GitHub Pages...', 'info');
+            
+            // Simulate GitHub Pages URL: https://okayabedin.github.io/how-old-is-me/02-03-2004/Sumiya
+            const testPath = '/how-old-is-me/02-03-2004/Sumiya';
+            addResult(`Simulating GitHub Pages path: <code>${testPath}</code>`, 'info');
+            
+            // Extract repository name and date pattern (like the 404.html does)
+            const pathParts = testPath.split('/').filter(part => part.length > 0);
+            addResult(`Path parts: [${pathParts.join(', ')}]`, 'info');
+            
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            let dateFound = false;
+            let redirectPath = '';
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                if (datePattern.test(part)) {
+                    const datePart = part;
+                    const namePart = pathParts[i + 1] || '';
+                    
+                    if (namePart) {
+                        redirectPath = `${datePart}/${namePart}`;
+                    } else {
+                        redirectPath = datePart;
+                    }
+                    
+                    dateFound = true;
+                    addResult(`✅ Date pattern found: "${datePart}"`, 'success');
+                    addResult(`✅ Name part: "${namePart || '(none)'}"`, namePart ? 'success' : 'info');
+                    break;
+                }
+            }
+            
+            if (dateFound) {
+                const baseUrl = 'https://okayabedin.github.io/how-old-is-me/';
+                const newUrl = baseUrl + 'index.html#/' + redirectPath;
+                addResult(`✅ Would redirect to:`, 'success');
+                addResult(`<div class="url-box github-url">${newUrl}</div>`, 'success');
+            } else {
+                addResult('❌ No date pattern found', 'error');
+            }
+        }
+
+        function testIndexHandler() {
+            addResult('🧪 Testing index.html direct URL handler...', 'info');
+            
+            // Test the GitHub Pages aware logic
+            const testPath = '/how-old-is-me/02-03-2004/Sumiya';
+            addResult(`Testing with path: <code>${testPath}</code>`, 'info');
+            
+            const dateMatch = testPath.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+            if (dateMatch) {
+                const hashUrl = '#/' + dateMatch[1];
+                addResult(`✅ Date match found: "${dateMatch[1]}"`, 'success');
+                addResult(`✅ Would set hash: "${hashUrl}"`, 'success');
+                
+                // Test the base path extraction
+                const basePath = testPath.replace(dateMatch[0], '') || '/';
+                addResult(`✅ Base path would be: "${basePath}"`, 'success');
+                
+                const finalUrl = `https://okayabedin.github.io${basePath}${hashUrl}`;
+                addResult(`✅ Final URL would be:`, 'success');
+                addResult(`<div class="url-box github-url">${finalUrl}</div>`, 'success');
+            } else {
+                addResult('❌ No date match found', 'error');
+            }
+        }
+
+        function testGitHubPagesUrl() {
+            addResult('🚀 Testing complete GitHub Pages flow...', 'info');
+            
+            // Simulate the complete flow
+            const originalUrl = 'https://okayabedin.github.io/how-old-is-me/02-03-2004/Sumiya';
+            addResult(`Starting with URL: <div class="url-box">${originalUrl}</div>`, 'info');
+            
+            addResult('📍 Step 1: User visits direct URL', 'info');
+            addResult('📍 Step 2: GitHub Pages serves 404.html (no server-side redirects)', 'warning');
+            addResult('📍 Step 3: 404.html detects date pattern and redirects to index.html#/02-03-2004/Sumiya', 'info');
+            addResult('📍 Step 4: index.html loads with hash URL', 'info');
+            addResult('📍 Step 5: script.js parses hash and auto-populates form', 'info');
+            addResult('📍 Step 6: Age calculation shows immediately', 'info');
+            
+            const finalUrl = 'https://okayabedin.github.io/how-old-is-me/index.html#/02-03-2004/Sumiya';
+            addResult(`✅ Final URL in browser bar:`, 'success');
+            addResult(`<div class="url-box github-url">${finalUrl}</div>`, 'success');
+            
+            addResult('🎉 Hash URL is visible and shareable!', 'success');
+            
+            // Actually test by setting a hash
+            setTimeout(() => {
+                addResult('Testing hash setting locally...', 'info');
+                window.location.hash = '#/02-03-2004/Sumiya';
+                setTimeout(() => {
+                    addResult(`✅ Hash set successfully: ${window.location.hash}`, 'success');
+                    updateEnvironment();
+                }, 100);
+            }, 1000);
+        }
+
+        // Initialize
+        updateEnvironment();
+        addResult('🟢 GitHub Pages test ready', 'info');
+        addResult('ℹ️ Note: GitHub Pages uses 404.html for client-side routing (no server-side redirects)', 'warning');
+    </script>
+</body>
+</html>

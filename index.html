@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">    <script>
-        // Handle direct URL access immediately
+        // Handle direct URL access immediately (GitHub Pages compatible)
         (function() {
             const path = window.location.pathname;
             const hash = window.location.hash;
@@ -15,7 +15,8 @@
                 return;
             }
             
-            // Check for date pattern in path
+            // For GitHub Pages, the path might be /how-old-is-me/02-03-2004/Sumiya
+            // or just /02-03-2004/Sumiya for local development
             const dateMatch = path.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
             if (dateMatch) {
                 const hashUrl = '#/' + dateMatch[1];
@@ -26,7 +27,9 @@
                 
                 // Use replaceState to update the URL to show the hash properly
                 setTimeout(() => {
-                    const newUrl = window.location.origin + window.location.pathname + hashUrl;
+                    // For GitHub Pages, keep the repository path
+                    const basePath = path.replace(dateMatch[0], '') || '/';
+                    const newUrl = window.location.origin + basePath + hashUrl;
                     console.log('Updating URL to show hash:', newUrl);
                     window.history.replaceState({}, '', newUrl);
                 }, 50);
