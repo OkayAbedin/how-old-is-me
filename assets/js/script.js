@@ -1,39 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Page loaded, starting URL processing...');    // Add early URL parsing to handle direct links immediately
-    const handleDirectUrl = () => {
-        const path = window.location.pathname;
-        const hash = window.location.hash;
-        
-        console.log('handleDirectUrl called:', { path, hash });
-        
-        // If we have a hash, prioritize that
-        if (hash && hash.startsWith('#/')) {
-            console.log('Hash detected, skipping direct URL handling');
-            return;
-        }
-        
-        // Check if the current path contains a date pattern
-        const pathParts = path.split('/').filter(part => part.length > 0);
-        const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
-        
-        console.log('Path parts:', pathParts);
-        
-        for (let i = 0; i < pathParts.length; i++) {
-            const part = pathParts[i];
-            if (datePattern.test(part)) {
-                // Found a date in the path, construct hash URL and redirect
-                let hashUrl = '#/' + pathParts.slice(i).join('/');
-                console.log('Converting direct URL to hash:', hashUrl);
-                window.location.hash = hashUrl;
-                return;
-            }
-        }
-        
-        console.log('No date pattern found in path');
-    };
+    console.log('Page loaded, starting URL processing...');
     
-    // Call this immediately
-    handleDirectUrl();    // URL-based date sharing functionality
+    // URL-based date sharing functionality
     const parseUrlForDate = () => {
         let path = window.location.pathname;
         let pathParts = path.split('/').filter(part => part.length > 0);

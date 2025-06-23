@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🧪 CLEAN TEST - Hash URL Only</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { border-left: 5px solid #28a745; }
+        .error { border-left: 5px solid #dc3545; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover { background: #0056b3; }
+        .big { font-size: 18px; font-weight: bold; }
+        .url { font-family: monospace; background: #f8f9fa; padding: 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 CLEAN TEST - Let's Start Simple</h1>
+    
+    <div class="test-box">
+        <h3>❌ Forget all the complex redirect logic for now</h3>
+        <p>Let's just test if the basic hash URL parsing works in the main page:</p>
+        <p class="big">Target: <span class="url">index.html#/02-03-2004/Sumiya</span></p>
+    </div>
+    
+    <div class="test-box">
+        <h3>🎯 Simple Test Plan</h3>
+        <ol>
+            <li><strong>Test 1:</strong> Open main page with hash URL directly</li>
+            <li><strong>Test 2:</strong> Verify the form gets populated correctly</li>
+            <li><strong>Test 3:</strong> Verify the age calculation shows results</li>
+        </ol>
+    </div>
+    
+    <div class="test-box">
+        <button onclick="testHashUrl()" class="big">🚀 TEST HASH URL</button>
+        <button onclick="testParser()">🔍 TEST PARSER LOGIC</button>
+        <button onclick="openMainPage()">📱 OPEN MAIN PAGE</button>
+        
+        <div id="results" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        function testHashUrl() {
+            const testHash = '#/02-03-2004/Sumiya';
+            
+            // Test the exact parsing logic from script.js
+            let pathParts = [];
+            if (testHash && testHash.startsWith('#/')) {
+                const hashPath = testHash.substring(2); // Remove #/
+                pathParts = hashPath.split('/').filter(part => part.length > 0);
+            }
+            
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            let result = null;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                const match = part.match(datePattern);
+                if (match) {
+                    const [, month, day, year] = match;
+                    
+                    // Validate the date (MM-DD-YYYY format from URL)
+                    const date = new Date(year, month - 1, day);
+                    if (date.getFullYear() == year && 
+                        date.getMonth() == month - 1 && 
+                        date.getDate() == day &&
+                        date <= new Date()) {
+                        
+                        let name = null;
+                        if (i + 1 < pathParts.length) {
+                            const namePart = pathParts[i + 1];
+                            const decodedName = decodeURIComponent(namePart);
+                            if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                                name = decodedName;
+                            }
+                        }
+                        
+                        result = {
+                            day: parseInt(day),
+                            month: parseInt(month),
+                            year: parseInt(year),
+                            name: name,
+                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        };
+                        break;
+                    }
+                }
+            }
+            
+            const resultsDiv = document.getElementById('results');
+            if (result) {
+                resultsDiv.innerHTML = `
+                    <div class="test-box success">
+                        <h4>✅ HASH PARSING WORKS!</h4>
+                        <p><strong>Input:</strong> ${testHash}</p>
+                        <p><strong>Parsed Date:</strong> ${result.month}/${result.day}/${result.year}</p>
+                        <p><strong>Parsed Name:</strong> ${result.name}</p>
+                        <p><strong>Date String for Form:</strong> <span class="url">${result.dateString}</span></p>
+                        <p><strong>This means:</strong> February 3rd, 2004, Name: Sumiya</p>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="test-box error">
+                        <h4>❌ HASH PARSING FAILED</h4>
+                        <p>The parsing logic is broken.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function testParser() {
+            const currentHash = window.location.hash;
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = `
+                <div class="test-box">
+                    <h4>🔍 Current Page Analysis</h4>
+                    <p><strong>Full URL:</strong> <span class="url">${window.location.href}</span></p>
+                    <p><strong>Hash:</strong> <span class="url">${currentHash || '(none)'}</span></p>
+                    <p><strong>Status:</strong> ${currentHash ? 'Has hash - should work' : 'No hash - normal state'}</p>
+                </div>
+            `;
+        }
+        
+        function openMainPage() {
+            const targetUrl = './index.html#/02-03-2004/Sumiya';
+            document.getElementById('results').innerHTML = `
+                <div class="test-box">
+                    <h4>📱 Opening Main Page</h4>
+                    <p>Target URL: <span class="url">${targetUrl}</span></p>
+                    <p><strong>What should happen:</strong></p>
+                    <ol>
+                        <li>Page loads with hash URL</li>
+                        <li>Form gets auto-populated with date: 2004-02-03 and name: Sumiya</li>
+                        <li>Form auto-submits and shows age calculation results</li>
+                        <li>Results show age for someone born February 3rd, 2004</li>
+                    </ol>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                window.open(targetUrl, '_blank');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

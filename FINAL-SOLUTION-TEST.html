@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🚨 FINAL SOLUTION TEST</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .step {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step h3 { margin-top: 0; color: #333; }
+        .success { border-left: 5px solid #28a745; }
+        .error { border-left: 5px solid #dc3545; }
+        .warning { border-left: 5px solid #ffc107; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .big-button { font-size: 16px; padding: 15px 30px; }
+        .url { 
+            font-family: monospace; 
+            background: #e9ecef; 
+            padding: 5px 8px; 
+            border-radius: 3px;
+            word-break: break-all;
+        }
+        .result { margin-top: 15px; padding: 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🚨 FINAL SOLUTION TEST</h1>
+    <h2>Testing Direct URL: 02-03-2004/Sumiya</h2>
+    
+    <div class="step warning">
+        <h3>🎯 The Problem</h3>
+        <p>When you visit <span class="url">https://okayabedin.github.io/how-old-is-me/02-03-2004/Sumiya</span> it gets stuck at "Redirecting to Age Calculator"</p>
+    </div>
+    
+    <div class="step">
+        <h3>🔧 Current Solution</h3>
+        <ol>
+            <li><strong>_redirects file:</strong> Routes date URLs to index.html</li>
+            <li><strong>404.html:</strong> Super simple backup redirect</li>
+            <li><strong>index.html:</strong> Immediate URL-to-hash conversion</li>
+            <li><strong>script.js:</strong> Hash URL parsing and auto-form submission</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h3>🧪 Let's Test Each Part</h3>
+        
+        <button onclick="test404Logic()" class="big-button">1️⃣ Test 404 Logic</button>
+        <button onclick="testIndexHandler()" class="big-button">2️⃣ Test Index Handler</button>
+        <button onclick="testHashParsing()" class="big-button">3️⃣ Test Hash Parsing</button>
+        <button onclick="testCompleteFlow()" class="big-button">🚀 Test Complete Flow</button>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        function test404Logic() {
+            // Simulate the 404.html logic
+            const testPath = '/how-old-is-me/02-03-2004/Sumiya';
+            const match = testPath.match(/(\/[\w-]+\/)?(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)$/);
+            
+            const resultsDiv = document.getElementById('test-results');
+            
+            if (match && match[2]) {
+                const newUrl = './index.html#/' + match[2];
+                resultsDiv.innerHTML = `
+                    <div class="result success">
+                        <h4>✅ 404 Logic Works!</h4>
+                        <p><strong>Input:</strong> ${testPath}</p>
+                        <p><strong>Match:</strong> ${match[2]}</p>
+                        <p><strong>Redirect URL:</strong> <span class="url">${newUrl}</span></p>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        <h4>❌ 404 Logic Failed</h4>
+                        <p>Could not extract date pattern from: ${testPath}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function testIndexHandler() {
+            // Simulate the index.html direct URL handler
+            const testPath = '/how-old-is-me/02-03-2004/Sumiya';
+            const dateMatch = testPath.match(/(\d{1,2}-\d{1,2}-\d{4}(?:\/[^\/]+)?)/);
+            
+            const resultsDiv = document.getElementById('test-results');
+            
+            if (dateMatch) {
+                const hashUrl = '#/' + dateMatch[1];
+                resultsDiv.innerHTML = `
+                    <div class="result success">
+                        <h4>✅ Index Handler Works!</h4>
+                        <p><strong>Input:</strong> ${testPath}</p>
+                        <p><strong>Extracted:</strong> ${dateMatch[1]}</p>
+                        <p><strong>Hash URL:</strong> <span class="url">${hashUrl}</span></p>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        <h4>❌ Index Handler Failed</h4>
+                        <p>Could not match pattern in: ${testPath}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function testHashParsing() {
+            // Test the hash parsing from script.js
+            const testHash = '#/02-03-2004/Sumiya';
+            
+            let pathParts = [];
+            if (testHash && testHash.startsWith('#/')) {
+                const hashPath = testHash.substring(2);
+                pathParts = hashPath.split('/').filter(part => part.length > 0);
+            }
+            
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            let result = null;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                const match = part.match(datePattern);
+                if (match) {
+                    const [, month, day, year] = match;
+                    const date = new Date(year, month - 1, day);
+                    
+                    if (date.getFullYear() == year && 
+                        date.getMonth() == month - 1 && 
+                        date.getDate() == day &&
+                        date <= new Date()) {
+                        
+                        let name = null;
+                        if (i + 1 < pathParts.length) {
+                            const namePart = pathParts[i + 1];
+                            const decodedName = decodeURIComponent(namePart);
+                            if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                                name = decodedName;
+                            }
+                        }
+                        
+                        result = {
+                            day: parseInt(day),
+                            month: parseInt(month),
+                            year: parseInt(year),
+                            name: name,
+                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        };
+                        break;
+                    }
+                }
+            }
+            
+            const resultsDiv = document.getElementById('test-results');
+            
+            if (result) {
+                resultsDiv.innerHTML = `
+                    <div class="result success">
+                        <h4>✅ Hash Parsing Works!</h4>
+                        <p><strong>Input:</strong> ${testHash}</p>
+                        <p><strong>Date:</strong> ${result.month}/${result.day}/${result.year} (February 3rd, 2004)</p>
+                        <p><strong>Name:</strong> ${result.name}</p>
+                        <p><strong>Form Date:</strong> <span class="url">${result.dateString}</span></p>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        <h4>❌ Hash Parsing Failed</h4>
+                        <p>Could not parse: ${testHash}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function testCompleteFlow() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = `
+                <div class="result success">
+                    <h4>🚀 Testing Complete Flow</h4>
+                    <p>Opening the actual age calculator with hash URL...</p>
+                    <p><strong>Target:</strong> <span class="url">index.html#/02-03-2004/Sumiya</span></p>
+                    <p><strong>Expected:</strong> Should show age for Sumiya born February 3rd, 2004</p>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                window.open('./index.html#/02-03-2004/Sumiya', '_blank');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

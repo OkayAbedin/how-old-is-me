@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=index.html">
+    <script>
+        // Extract the URL path and redirect with hash
+        const fullPath = window.location.pathname;
+        console.log('404 triggered for:', fullPath);
+        
+        // Simple pattern: if URL contains date pattern, redirect with hash
+        if (fullPath.match(/\/\d{1,2}-\d{1,2}-\d{4}/)) {
+            // Extract everything after the last slash before the date
+            const parts = fullPath.split('/');
+            const dateIndex = parts.findIndex(part => part.match(/^\d{1,2}-\d{1,2}-\d{4}$/));
+            
+            if (dateIndex > 0) {
+                const hashPart = parts.slice(dateIndex).join('/');
+                const newUrl = 'index.html#/' + hashPart;
+                console.log('Redirecting to:', newUrl);
+                window.location.href = newUrl;
+            } else {
+                window.location.href = 'index.html';
+            }
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</head>
+<body>
+    <h1>Redirecting...</h1>
+    <p>If you are not redirected automatically, <a href="index.html">click here</a>.</p>
+</body>
+</html>
