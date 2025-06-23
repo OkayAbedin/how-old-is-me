@@ -8,17 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
             const hashPath = window.location.hash.substring(2); // Remove #/
             pathParts = hashPath.split('/').filter(part => part.length > 0);
         }
-        
-        // Look for date pattern DD-MM-YYYY (enforcing this format)
+          // Look for date pattern MM-DD-YYYY (for URLs)
         const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
         
         for (let i = 0; i < pathParts.length; i++) {
             const part = pathParts[i];
             const match = part.match(datePattern);
             if (match) {
-                const [, day, month, year] = match;
-                
-                // Validate the date (DD-MM-YYYY format)
+                const [, month, day, year] = match;
+                  // Validate the date (MM-DD-YYYY format from URL)
                 const date = new Date(year, month - 1, day);
                 if (date.getFullYear() == year && 
                     date.getMonth() == month - 1 && 
@@ -41,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
                         month: parseInt(month),
                         year: parseInt(year),
                         name: name,
-                        dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        dateString: `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`
                     };
                 }
             }
@@ -59,9 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
         
         // Ensure basePath doesn't end with a slash to avoid double slashes
         basePath = basePath.replace(/\/$/, '');
-        
-        // Use DD-MM-YYYY format consistently
-        let urlPath = `${basePath}/${day}-${month}-${year}`;
+          // Use MM-DD-YYYY format for URLs
+        let urlPath = `${basePath}/${month}-${day}-${year}`;
         
         // Add name if provided
         if (name && name.trim()) {
@@ -85,8 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
         const baseUrl = window.location.origin;
         let basePath = window.location.pathname.replace(/\/\d{1,2}-\d{1,2}-\d{4}(\/[^\/]*)?$/, '');
         basePath = basePath.replace(/\/$/, '');
-        
-        let hashPath = `${day}-${month}-${year}`;
+          let hashPath = `${month}-${day}-${year}`;
         
         if (name && name.trim()) {
             const cleanName = name.trim().replace(/[^a-zA-Z\s\-'\.]/g, '');
@@ -109,8 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
             // Update hash without page reload
             const day = birthdate.getDate().toString().padStart(2, '0');
             const month = (birthdate.getMonth() + 1).toString().padStart(2, '0');
-            const year = birthdate.getFullYear();
-            let hashPath = `${day}-${month}-${year}`;
+            const year = birthdate.getFullYear();            let hashPath = `${month}-${day}-${year}`;
             if (name && name.trim()) {
                 const cleanName = name.trim().replace(/[^a-zA-Z\s\-'\.]/g, '');
                 if (cleanName) {
