@@ -119,15 +119,13 @@
             if (urlData.name) {
                 redirectUrl += `/${encodeURIComponent(urlData.name)}`;
             }
-            
-            setTimeout(() => {
+              setTimeout(() => {
                 window.location.href = redirectUrl;
-            }, 2000);
-        } else {
-            // No valid date found, redirect to main page
+            }, 500);
+        } else {            // No valid date found, redirect to main page
             setTimeout(() => {
                 window.location.href = 'index.html';
-            }, 2000);
+            }, 500);
         }
     </script>
 </body>

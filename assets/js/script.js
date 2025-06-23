@@ -1,4 +1,32 @@
-document.addEventListener('DOMContentLoaded', () => {    // URL-based date sharing functionality
+document.addEventListener('DOMContentLoaded', () => {
+    // Add early URL parsing to handle direct links immediately
+    const handleDirectUrl = () => {
+        const path = window.location.pathname;
+        const hash = window.location.hash;
+        
+        // If we have a hash, prioritize that
+        if (hash && hash.startsWith('#/')) {
+            return;
+        }
+        
+        // Check if the current path contains a date pattern
+        const pathParts = path.split('/').filter(part => part.length > 0);
+        const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+        
+        for (let i = 0; i < pathParts.length; i++) {
+            const part = pathParts[i];
+            if (datePattern.test(part)) {
+                // Found a date in the path, construct hash URL and redirect
+                let hashUrl = '#/' + pathParts.slice(i).join('/');
+                console.log('Converting direct URL to hash:', hashUrl);
+                window.location.hash = hashUrl;
+                return;
+            }
+        }
+    };
+    
+    // Call this immediately
+    handleDirectUrl();    // URL-based date sharing functionality
     const parseUrlForDate = () => {
         let path = window.location.pathname;
         let pathParts = path.split('/').filter(part => part.length > 0);
@@ -33,13 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
                             name = decodedName;
                         }
                     }
-                    
-                    return {
+                      return {
                         day: parseInt(day),
                         month: parseInt(month),
                         year: parseInt(year),
                         name: name,
-                        dateString: `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`
+                        dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
                     };
                 }
             }
@@ -195,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
     let profiles = JSON.parse(localStorage.getItem('profiles')) || [];    // Check for date in URL and auto-populate form
     const urlDate = parseUrlForDate();
     if (urlDate) {
+        console.log('URL date parsed:', urlDate);
         document.getElementById('birthdate').value = urlDate.dateString;
         if (urlDate.name) {
             document.getElementById('name').value = urlDate.name;
@@ -203,7 +231,9 @@ document.addEventListener('DOMContentLoaded', () => {    // URL-based date shari
         setTimeout(() => {
             form.dispatchEvent(new Event('submit'));
         }, 100);
-    }    // Handle browser back/forward navigation
+    } else {
+        console.log('No valid date found in URL:', window.location.pathname);
+    }// Handle browser back/forward navigation
     window.addEventListener('popstate', () => {
         const urlDate = parseUrlForDate();
         if (urlDate) {
