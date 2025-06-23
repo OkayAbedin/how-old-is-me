@@ -237,17 +237,24 @@ document.addEventListener('DOMContentLoaded', () => {
             birthdateInput.value = urlDate.dateString;
             if (urlDate.name) {
                 nameInput.value = urlDate.name;
-            }
-            console.log('Form populated, submitting...');
+            }            console.log('Form populated, submitting...');
             // Auto-submit the form to show results immediately
             setTimeout(() => {
                 if (form) {
-                    form.dispatchEvent(new Event('submit'));
-                    console.log('Form submitted');
+                    try {
+                        console.log('About to submit form with values:', {
+                            birthdate: birthdateInput.value,
+                            name: nameInput.value
+                        });
+                        form.dispatchEvent(new Event('submit'));
+                        console.log('Form submitted successfully');
+                    } catch (error) {
+                        console.error('Error submitting form:', error);
+                    }
                 } else {
                     console.error('Form not found!');
                 }
-            }, 100);
+            }, 200); // Slightly longer delay to ensure DOM is ready
         } else {
             console.error('Form inputs not found!', {
                 birthdate: !!birthdateInput,

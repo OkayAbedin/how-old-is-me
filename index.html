@@ -9,9 +9,45 @@
     <link rel="stylesheet" href="assets/css/scrollbar.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>How Old Is Me - Advanced Age Calculator</title>
+    
+    <!-- Emergency URL handler for direct links -->
+    <script>
+        // Handle direct URLs immediately when page loads
+        (function() {
+            const path = window.location.pathname;
+            const hash = window.location.hash;
+            
+            console.log('Emergency URL handler - path:', path, 'hash:', hash);
+            
+            // If we already have a hash, we're good
+            if (hash && hash.startsWith('#/')) {
+                console.log('Hash URL detected, no action needed');
+                return;
+            }
+            
+            // Check for date pattern in path
+            const pathParts = path.split('/').filter(part => part.length > 0);
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                if (datePattern.test(pathParts[i])) {
+                    const hashPart = pathParts.slice(i).join('/');
+                    const newHash = '#/' + hashPart;
+                    console.log('Converting direct URL to hash immediately:', newHash);
+                    
+                    // Set hash and reload to ensure proper handling
+                    window.location.hash = newHash;
+                    
+                    // Also clean up the URL
+                    const cleanPath = path.split('/' + pathParts[i])[0] + '/';
+                    window.history.replaceState({}, '', cleanPath + newHash);
+                    break;
+                }
+            }
+        })();
+    </script>
 </head>
 <body data-theme="dark">    <main class="container">
         <div class="theme-toggle-container">

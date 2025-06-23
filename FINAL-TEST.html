@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Final Test - Direct URL Access</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .test { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .success { border-left: 5px solid #28a745; }
+        .error { border-left: 5px solid #dc3545; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .url { font-family: monospace; background: #f8f9fa; padding: 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🚨 FINAL FIX TEST: Direct URL Access</h1>
+    
+    <div class="test">
+        <h3>Current State</h3>
+        <p><strong>Current URL:</strong> <span class="url" id="current-url"></span></p>
+        <p><strong>Pathname:</strong> <span class="url" id="pathname"></span></p>
+        <p><strong>Hash:</strong> <span class="url" id="hash"></span></p>
+    </div>
+    
+    <div class="test">
+        <h3>Test Direct Access to Age Calculator</h3>
+        <p>This simulates what happens when someone visits:<br>
+        <span class="url">https://okayabedin.github.io/how-old-is-me/02-03-2004/Sumiya</span></p>
+        
+        <button onclick="testDirectAccess()">🚀 Test Direct URL Access</button>
+        <button onclick="openMainPage()">📱 Open Main Page with Hash</button>
+        <button onclick="test404()">🔧 Test 404 Redirect Logic</button>
+    </div>
+    
+    <div class="test" id="results">
+        <h3>Results</h3>
+        <div id="test-output">Click a test button above</div>
+    </div>
+
+    <script>
+        // Update current state
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('pathname').textContent = window.location.pathname;
+        document.getElementById('hash').textContent = window.location.hash || '(none)';
+        
+        function testDirectAccess() {
+            // This simulates the emergency URL handler in index.html
+            const simulatedPath = '/how-old-is-me/02-03-2004/Sumiya';
+            const pathParts = simulatedPath.split('/').filter(part => part.length > 0);
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            
+            let result = 'No date pattern found';
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                if (datePattern.test(pathParts[i])) {
+                    const hashPart = pathParts.slice(i).join('/');
+                    const newHash = '#/' + hashPart;
+                    result = `Would convert to hash: ${newHash}`;
+                    break;
+                }
+            }
+            
+            document.getElementById('test-output').innerHTML = `
+                <div class="success">
+                    <strong>Direct Access Test:</strong><br>
+                    Input: ${simulatedPath}<br>
+                    Result: ${result}
+                </div>
+            `;
+        }
+        
+        function openMainPage() {
+            const targetUrl = './index.html#/02-03-2004/Sumiya';
+            document.getElementById('test-output').innerHTML = `
+                <div class="success">
+                    <strong>Opening main page with hash URL...</strong><br>
+                    Target: ${targetUrl}
+                </div>
+            `;
+            setTimeout(() => {
+                window.open(targetUrl, '_blank');
+            }, 1000);
+        }
+        
+        function test404() {
+            const targetUrl = './404.html';
+            document.getElementById('test-output').innerHTML = `
+                <div class="success">
+                    <strong>Testing 404 redirect...</strong><br>
+                    Opening: ${targetUrl}
+                </div>
+            `;
+            setTimeout(() => {
+                window.open(targetUrl, '_blank');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
