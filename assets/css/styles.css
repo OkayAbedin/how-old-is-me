@@ -1106,7 +1106,7 @@ footer i {
 }
 
 .url-notification .url-text {
-    color: var(--accent);
+    color: var(--text-secondary);
     font-family: monospace;
     font-size: 12px;
     margin-top: 4px;
