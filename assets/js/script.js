@@ -1,4 +1,104 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {    // URL-based date sharing functionality
+    const parseUrlForDate = () => {
+        const path = window.location.pathname;
+        const pathParts = path.split('/');
+        
+        // Look for date patterns (DD-MM-YYYY, MM-DD-YYYY, YYYY-MM-DD)
+        const datePatterns = [
+            /^(\d{1,2})-(\d{1,2})-(\d{4})$/, // DD-MM-YYYY or MM-DD-YYYY
+            /^(\d{4})-(\d{1,2})-(\d{1,2})$/, // YYYY-MM-DD
+        ];
+        
+        for (const part of pathParts) {
+            for (const pattern of datePatterns) {
+                const match = part.match(pattern);
+                if (match) {
+                    let day, month, year;
+                    
+                    if (pattern === datePatterns[0]) {
+                        // DD-MM-YYYY format (assuming DD-MM-YYYY for now)
+                        [, day, month, year] = match;
+                    } else {
+                        // YYYY-MM-DD format
+                        [, year, month, day] = match;
+                    }
+                    
+                    // Validate the date
+                    const date = new Date(year, month - 1, day);
+                    if (date.getFullYear() == year && 
+                        date.getMonth() == month - 1 && 
+                        date.getDate() == day &&
+                        date <= new Date()) { // Must be in the past
+                        return {
+                            day: parseInt(day),
+                            month: parseInt(month),
+                            year: parseInt(year),
+                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        };
+                    }
+                }
+            }
+        }
+        return null;
+    };
+
+    const generateShareableUrl = (birthdate) => {
+        if (!birthdate) return window.location.origin + window.location.pathname;
+        
+        const day = birthdate.getDate().toString().padStart(2, '0');
+        const month = (birthdate.getMonth() + 1).toString().padStart(2, '0');
+        const year = birthdate.getFullYear();
+        
+        const baseUrl = window.location.origin;
+        const basePath = window.location.pathname.replace(/\/\d{1,2}-\d{1,2}-\d{4}\/?$/, '');
+        
+        return `${baseUrl}${basePath}/${day}-${month}-${year}`;
+    };    const updateUrlWithDate = (birthdate) => {
+        const newUrl = generateShareableUrl(birthdate);
+        // Update URL without reloading the page
+        window.history.pushState({}, '', newUrl);
+        
+        // Update shareable URL display
+        shareableUrlInput.value = newUrl;
+        shareableUrlSection.hidden = false;
+        
+        // Show notification that URL has been updated
+        showUrlNotification(newUrl);
+    };
+
+    const showUrlNotification = (url) => {
+        // Remove existing notification if any
+        const existing = document.querySelector('.url-notification');
+        if (existing) {
+            existing.remove();
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'url-notification';
+        notification.innerHTML = `
+            <div>✨ Shareable URL updated!</div>
+            <div class="url-text">${url}</div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Show notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+
+        // Hide notification after 4 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }, 4000);
+    };
+
     // DOM Elements
     const form = document.getElementById('ageForm');
     const resultDiv = document.getElementById('result');
@@ -10,6 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveProfileBtn = document.getElementById('saveProfileBtn');
     const profilesList = document.getElementById('profilesList');
     const savedProfiles = document.getElementById('savedProfiles');
+    const shareableUrlSection = document.getElementById('shareableUrlSection');
+    const shareableUrlInput = document.getElementById('shareableUrl');
+    const copyUrlBtn = document.getElementById('copyUrlBtn');
 
     // Default values & constants
     const LIFE_EXPECTANCY = {
@@ -29,6 +132,33 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Get saved profiles from local storage
     let profiles = JSON.parse(localStorage.getItem('profiles')) || [];
+
+    // Check for date in URL and auto-populate form
+    const urlDate = parseUrlForDate();
+    if (urlDate) {
+        document.getElementById('birthdate').value = urlDate.dateString;
+        // Auto-submit the form to show results immediately
+        setTimeout(() => {
+            form.dispatchEvent(new Event('submit'));
+        }, 100);
+    }
+
+    // Handle browser back/forward navigation
+    window.addEventListener('popstate', () => {
+        const urlDate = parseUrlForDate();
+        if (urlDate) {
+            document.getElementById('birthdate').value = urlDate.dateString;
+            setTimeout(() => {
+                form.dispatchEvent(new Event('submit'));
+            }, 100);
+        } else {
+            // Clear the form if no date in URL
+            document.getElementById('birthdate').value = '';
+            document.getElementById('name').value = '';
+            resultDiv.innerHTML = '';
+            shareableUrlSection.hidden = true;
+        }
+    });
 
     // Theme toggle functionality
     themeToggle.addEventListener('click', () => {
@@ -460,7 +590,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             return;
         }
-        
+
+        // Update URL with the entered date
+        updateUrlWithDate(birthdate);
+
         try {
             // Calculate basic age
             let years = today.getFullYear() - birthdate.getFullYear();
@@ -626,32 +759,67 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;            // Create life percentage chart
             createLifePercentageChart(lifeExpectancy.percentage);
+            
+            // Update URL with the new birthdate
+            updateUrlWithDate(birthdate);
         } catch (error) {
             // Just log the error but don't show it to the user
             console.error('Error calculating age:', error);
             // Clear any existing error message
             resultDiv.innerHTML = '';
         }
-    });
-
-    // Share functionality
+    });    // Share functionality
     shareBtn.addEventListener('click', async () => {
+        const birthdateInput = document.getElementById('birthdate');
+        const birthdate = birthdateInput.value ? new Date(birthdateInput.value) : null;
+        const shareUrl = generateShareableUrl(birthdate);
         const text = document.querySelector('.age-text')?.textContent || '';
+        const shareText = `${text}\n\nCalculate your age too: ${shareUrl}`;
+        
         if (navigator.share) {
             try {
                 await navigator.share({
-                    title: 'My Age Calculation',
-                    text: text
+                    title: 'My Age Calculation - How Old Is Me',
+                    text: shareText,
+                    url: shareUrl
                 });
             } catch (err) {
                 console.error('Share failed:', err);
+                // Fallback to clipboard
+                navigator.clipboard.writeText(shareUrl)
+                    .then(() => alert('Shareable link copied to clipboard!'))
+                    .catch(err => console.error('Copy failed:', err));
             }
         } else {
-            navigator.clipboard.writeText(text)
-                .then(() => alert('Results copied to clipboard!'))
+            navigator.clipboard.writeText(shareUrl)
+                .then(() => alert('Shareable link copied to clipboard!'))
                 .catch(err => console.error('Copy failed:', err));
         }
-    });    // Print functionality
+    });// Copy URL functionality
+    copyUrlBtn.addEventListener('click', async () => {
+        const url = shareableUrlInput.value;
+        if (url) {
+            try {
+                await navigator.clipboard.writeText(url);
+                // Temporarily change the icon to show success
+                copyUrlBtn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    copyUrlBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 1500);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                // Fallback for older browsers
+                shareableUrlInput.select();
+                document.execCommand('copy');
+                copyUrlBtn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    copyUrlBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 1500);
+            }
+        }
+    });
+
+    // Print functionality
     printBtn.addEventListener('click', () => {
         exportResults();
     });

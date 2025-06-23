@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Sharing Test - How Old Is Me</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-link {
+            display: block;
+            margin: 10px 0;
+            padding: 15px;
+            background: #f4f4f4;
+            text-decoration: none;
+            color: #333;
+            border-radius: 5px;
+            border-left: 4px solid #007cba;
+        }
+        .test-link:hover {
+            background: #e9e9e9;
+        }
+        .description {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Sharing Test for How Old Is Me</h1>
+    <p>Click on the links below to test the URL sharing functionality:</p>
+    
+    <h2>Test Links (assuming local file path):</h2>
+    
+    <a href="index.html" class="test-link">
+        <strong>Normal Page (no date)</strong>
+        <div class="description">Regular page load without any date parameters</div>
+    </a>
+    
+    <a href="index.html/28-11-2001" class="test-link">
+        <strong>Birthday: November 28, 2001</strong>
+        <div class="description">URL: index.html/28-11-2001</div>
+    </a>
+    
+    <a href="index.html/15-06-1995" class="test-link">
+        <strong>Birthday: June 15, 1995</strong>
+        <div class="description">URL: index.html/15-06-1995</div>
+    </a>
+    
+    <a href="index.html/01-01-2000" class="test-link">
+        <strong>Birthday: January 1, 2000</strong>
+        <div class="description">URL: index.html/01-01-2000</div>
+    </a>
+    
+    <a href="index.html/25-12-1990" class="test-link">
+        <strong>Birthday: December 25, 1990</strong>
+        <div class="description">URL: index.html/25-12-1990</div>
+    </a>
+
+    <h2>How it works:</h2>
+    <ol>
+        <li><strong>URL Detection:</strong> When the page loads, it checks the URL for date patterns</li>
+        <li><strong>Auto-population:</strong> If a valid date is found, it automatically fills the birthdate field</li>
+        <li><strong>Auto-calculation:</strong> The age calculation runs automatically</li>
+        <li><strong>URL Generation:</strong> When you manually enter a date, a shareable URL is generated</li>
+        <li><strong>Share Functionality:</strong> The share button now includes the URL with the date</li>
+    </ol>
+
+    <h2>Features Added:</h2>
+    <ul>
+        <li>✅ URL parsing for date extraction (DD-MM-YYYY format)</li>
+        <li>✅ Auto-population of birthdate field from URL</li>
+        <li>✅ Automatic age calculation when URL contains date</li>
+        <li>✅ URL updates when manually entering dates</li>
+        <li>✅ Enhanced share functionality with URL sharing</li>
+        <li>✅ Shareable URL display section with copy button</li>
+        <li>✅ Visual notifications when URL is updated</li>
+    </ul>
+
+    <p><a href="index.html" style="background: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">← Back to Age Calculator</a></p>
+</body>
+</html>

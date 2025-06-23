@@ -30,11 +30,19 @@ A modern, elegant age calculator web app with detailed time breakdowns, astrolog
 
 ### User Experience
 - **Profile Management**: Save and load multiple birth dates
-- **Share Functionality**: Share your age results with others
+- **URL Sharing**: Direct links with embedded birth dates (e.g., `/28-11-2001`)
+- **Share Functionality**: Share your age results with others via URL
 - **Print Capability**: Generate printable age reports
 - **Beautiful UI**: Glass morphism design with smooth animations
 - **Fully Responsive**: Works perfectly on all devices
 - **Accessible**: Designed with accessibility in mind
+
+### 🔗 URL Sharing Feature
+- **Direct Date Links**: Share URLs like `yoursite.com/how-old-is-me/28-11-2001`
+- **Auto-Population**: Automatically fills and calculates age from URL
+- **Smart Parsing**: Supports DD-MM-YYYY and YYYY-MM-DD formats
+- **URL Generation**: Creates shareable links when dates are entered manually
+- **Copy Functionality**: One-click URL copying with visual feedback
 
 ## 🛠️ Technology Stack
 
@@ -101,6 +109,23 @@ npx serve
 ```
 
 3. The app should now be running at `http://localhost:8000` or similar
+
+## 🔗 URL Sharing Examples
+
+The URL sharing feature allows for easy sharing of specific birth dates:
+
+### URL Formats
+```
+yoursite.com/how-old-is-me/28-11-2001  # November 28, 2001
+yoursite.com/how-old-is-me/15-06-1995  # June 15, 1995
+yoursite.com/how-old-is-me/01-01-2000  # January 1, 2000
+```
+
+### How it works:
+1. **Share a specific age**: Enter a birthdate manually, and the URL automatically updates
+2. **Direct access**: Anyone clicking the URL sees the age calculation immediately
+3. **Copy & Share**: Use the built-in copy button to share the URL
+4. **Auto-calculation**: No need to re-enter the date - it's calculated automatically
 
 ## 📱 Browser Compatibility
 
