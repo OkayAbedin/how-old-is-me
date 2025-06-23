@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Direct URL Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+        .test-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2>🧪 Testing Direct URL Access: 02-03-2004/Sumiya</h2>
+        <div id="status"></div>
+        <button class="button" onclick="testRedirect()">Test Redirect Logic</button>
+        <button class="button" onclick="manualRedirect()">Manual Redirect</button>
+    </div>
+
+    <script>
+        // Simulate the exact 404.html logic
+        function extractFromUrl() {
+            // Simulate the problematic URL path
+            const simulatedPath = "/how-old-is-me/02-03-2004/Sumiya";
+            const pathParts = simulatedPath.split('/').filter(part => part.length > 0);
+            
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                const match = part.match(datePattern);
+                if (match) {
+                    const [, month, day, year] = match;
+                    
+                    const date = new Date(year, month - 1, day);
+                    if (date.getFullYear() == year && 
+                        date.getMonth() == month - 1 && 
+                        date.getDate() == day &&
+                        date <= new Date()) {
+                        
+                        let name = null;
+                        if (i + 1 < pathParts.length) {
+                            const namePart = pathParts[i + 1];
+                            const decodedName = decodeURIComponent(namePart);
+                            if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                                name = decodedName;
+                            }
+                        }
+                        
+                        return {
+                            day: parseInt(day),
+                            month: parseInt(month),
+                            year: parseInt(year),
+                            name: name,
+                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        function testRedirect() {
+            const statusDiv = document.getElementById('status');
+            const urlData = extractFromUrl();
+            
+            if (urlData) {
+                let redirectUrl = `index.html#/${urlData.month.toString().padStart(2, '0')}-${urlData.day.toString().padStart(2, '0')}-${urlData.year}`;
+                if (urlData.name) {
+                    redirectUrl += `/${encodeURIComponent(urlData.name)}`;
+                }
+                
+                statusDiv.innerHTML = `
+                    <div class="status">✅ URL Data Extracted Successfully!</div>
+                    <div class="status">📅 Date: ${urlData.month}/${urlData.day}/${urlData.year}</div>
+                    <div class="status">👤 Name: ${urlData.name || 'None'}</div>
+                    <div class="status">🔗 Redirect URL: ${redirectUrl}</div>
+                    <div class="status">📝 Date String for form: ${urlData.dateString}</div>
+                `;
+            } else {
+                statusDiv.innerHTML = `<div class="status">❌ Failed to extract URL data</div>`;
+            }
+        }
+
+        function manualRedirect() {
+            const urlData = extractFromUrl();
+            if (urlData) {
+                let redirectUrl = `index.html#/${urlData.month.toString().padStart(2, '0')}-${urlData.day.toString().padStart(2, '0')}-${urlData.year}`;
+                if (urlData.name) {
+                    redirectUrl += `/${encodeURIComponent(urlData.name)}`;
+                }
+                window.location.href = redirectUrl;
+            }
+        }
+
+        // Auto-run test on load
+        window.onload = function() {
+            testRedirect();
+        };
+    </script>
+</body>
+</html>

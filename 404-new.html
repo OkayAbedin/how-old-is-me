@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>    <meta charset="UTF-8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=./index.html">
     <title>Redirecting...</title>
     <style>
         body {
@@ -86,8 +86,12 @@
                     break;
                 }
             }
-              // Super fast redirect - virtually immediate
-            window.location.replace(redirectUrl);
+            
+            // Super fast redirect - only 10ms delay
+            setTimeout(() => {
+                console.log('Performing redirect to:', redirectUrl);
+                window.location.replace(redirectUrl);
+            }, 10);
         }
         
         // Execute redirect immediately when page loads

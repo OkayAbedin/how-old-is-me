@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {    // Add early URL parsing to handle direct links immediately
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Page loaded, starting URL processing...');    // Add early URL parsing to handle direct links immediately
     const handleDirectUrl = () => {
         const path = window.location.pathname;
         const hash = window.location.hash;

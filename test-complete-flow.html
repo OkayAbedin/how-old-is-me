@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simulate Direct URL Access</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Testing Complete Direct URL Flow</h1>
+    
+    <div class="step">
+        <h3>Step 1: Simulate accessing https://example.com/how-old-is-me/02-03-2004/Sumiya</h3>
+        <p>This would normally trigger a 404 and redirect to the 404.html page</p>
+        <button onclick="test404Redirect()">Test 404 Redirect Logic</button>
+        <div id="step1-result"></div>
+    </div>
+    
+    <div class="step">
+        <h3>Step 2: Simulate 404.html redirect</h3>
+        <p>404.html should redirect to index.html#/02-03-2004/Sumiya</p>
+        <button onclick="simulateRedirect()">Simulate Redirect to Main Page</button>
+        <div id="step2-result"></div>
+    </div>
+    
+    <div class="step">
+        <h3>Step 3: Test main page hash parsing</h3>
+        <p>Main page should parse the hash and auto-submit the form</p>
+        <button onclick="testMainPageParsing()">Test Hash Parsing</button>
+        <div id="step3-result"></div>
+    </div>
+
+    <script>
+        function test404Redirect() {
+            const simulatedPath = "/how-old-is-me/02-03-2004/Sumiya";
+            const pathParts = simulatedPath.split('/').filter(part => part.length > 0);
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            
+            let redirectUrl = './index.html';
+            let found = false;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                if (datePattern.test(pathParts[i])) {
+                    const hashPart = pathParts.slice(i).join('/');
+                    redirectUrl = `./index.html#/${hashPart}`;
+                    found = true;
+                    break;
+                }
+            }
+            
+            const result = document.getElementById('step1-result');
+            if (found) {
+                result.innerHTML = `<div class="success">✅ 404 redirect would work: ${redirectUrl}</div>`;
+            } else {
+                result.innerHTML = `<div class="error">❌ 404 redirect failed</div>`;
+            }
+        }
+        
+        function simulateRedirect() {
+            const targetUrl = './index.html#/02-03-2004/Sumiya';
+            const result = document.getElementById('step2-result');
+            result.innerHTML = `<div class="success">✅ Would redirect to: ${targetUrl}</div>`;
+            
+            // Actually test the redirect after 2 seconds
+            setTimeout(() => {
+                result.innerHTML += `<br><button onclick="window.location.href='${targetUrl}'">Actually Go to Main Page</button>`;
+            }, 1000);
+        }
+        
+        function testMainPageParsing() {
+            const testHash = '#/02-03-2004/Sumiya';
+            
+            let pathParts = [];
+            if (testHash && testHash.startsWith('#/')) {
+                const hashPath = testHash.substring(2);
+                pathParts = hashPath.split('/').filter(part => part.length > 0);
+            }
+            
+            const datePattern = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                const part = pathParts[i];
+                const match = part.match(datePattern);
+                if (match) {
+                    const [, month, day, year] = match;
+                    const date = new Date(year, month - 1, day);
+                    
+                    if (date.getFullYear() == year && 
+                        date.getMonth() == month - 1 && 
+                        date.getDate() == day &&
+                        date <= new Date()) {
+                        
+                        let name = null;
+                        if (i + 1 < pathParts.length) {
+                            const namePart = pathParts[i + 1];
+                            const decodedName = decodeURIComponent(namePart);
+                            if (/^[a-zA-Z\s\-'\.]+$/.test(decodedName) && decodedName.length <= 50) {
+                                name = decodedName;
+                            }
+                        }
+                        
+                        const result = {
+                            day: parseInt(day),
+                            month: parseInt(month),
+                            year: parseInt(year),
+                            name: name,
+                            dateString: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+                        };
+                        
+                        document.getElementById('step3-result').innerHTML = `
+                            <div class="success">
+                                ✅ Hash parsing successful!<br>
+                                Date: ${result.month}/${result.day}/${result.year} (${date.toDateString()})<br>
+                                Name: ${result.name}<br>
+                                Form date string: ${result.dateString}
+                            </div>
+                        `;
+                        return;
+                    }
+                }
+            }
+            
+            document.getElementById('step3-result').innerHTML = `<div class="error">❌ Hash parsing failed</div>`;
+        }
+    </script>
+</body>
+</html>
