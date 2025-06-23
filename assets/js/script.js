@@ -120,46 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update URL without reloading the page
             window.history.pushState({}, '', newUrl);
         }
-        
-        // Update shareable URL display
+          // Update shareable URL display
         shareableUrlInput.value = newUrl;
         shareableUrlSection.hidden = false;
-        
-        // Show notification that URL has been updated
-        showUrlNotification(newUrl);
-    };
-
-    const showUrlNotification = (url) => {
-        // Remove existing notification if any
-        const existing = document.querySelector('.url-notification');
-        if (existing) {
-            existing.remove();
-        }
-
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = 'url-notification';
-        notification.innerHTML = `
-            <div>✨ Shareable URL updated!</div>
-            <div class="url-text">${url}</div>
-        `;
-
-        document.body.appendChild(notification);
-
-        // Show notification
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
-
-        // Hide notification after 4 seconds
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 300);
-        }, 4000);
     };    // DOM Elements
     const form = document.getElementById('ageForm');
     const resultDiv = document.getElementById('result');
@@ -302,17 +265,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.setAttribute('data-theme', savedTheme);
     themeToggle.innerHTML = savedTheme === 'dark' 
         ? '<i class="fas fa-moon"></i>' 
-        : '<i class="fas fa-sun"></i>';
-
-    // Tab switching functionality
+        : '<i class="fas fa-sun"></i>';    // Tab switching functionality
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.hidden = true);
+            tabContents.forEach(content => content.style.display = 'none');
             button.classList.add('active');
-            document.getElementById(`${button.dataset.tab}Tab`).hidden = false;
+            document.getElementById(`${button.dataset.tab}Tab`).style.display = 'block';
         });
-    });    // Get zodiac sign based on month and day
+    });// Get zodiac sign based on month and day
     const getZodiacSign = (month, day) => {
         if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) {
             return "Aquarius";
@@ -950,4 +911,61 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+    
+    // Enhanced date picker functionality
+    const birthdateInput = document.getElementById('birthdate');
+    if (birthdateInput) {
+        let isTextClick = false;
+        
+        // Detect if click is on text vs container
+        birthdateInput.addEventListener('mousedown', (e) => {
+            const rect = birthdateInput.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            
+            // Check if click is in the text area (approximate text region)
+            const textAreaWidth = birthdateInput.offsetWidth * 0.7; // Assume text takes 70% of input width
+            const textAreaHeight = birthdateInput.offsetHeight * 0.6; // Assume text is in middle 60% of height
+            const textAreaY = birthdateInput.offsetHeight * 0.2; // Start at 20% from top
+            
+            isTextClick = (clickX < textAreaWidth && clickY > textAreaY && clickY < textAreaY + textAreaHeight);
+        });
+        
+        // Handle the click behavior
+        birthdateInput.addEventListener('click', (e) => {
+            // Small delay to ensure mousedown handler has run
+            setTimeout(() => {
+                if (!isTextClick) {
+                    // Click was on container/border, open calendar
+                    try {
+                        if (birthdateInput.showPicker) {
+                            birthdateInput.showPicker();
+                        }
+                    } catch (error) {
+                        // Fallback for browsers that don't support showPicker
+                        birthdateInput.focus();
+                    }
+                } else {
+                    // Click was on text, allow normal text input
+                    birthdateInput.focus();
+                }
+                isTextClick = false; // Reset flag
+            }, 10);
+        });
+        
+        // Also open calendar when clicking on the label
+        const birthdateLabel = document.querySelector('label[for="birthdate"]');
+        if (birthdateLabel) {
+            birthdateLabel.addEventListener('click', (e) => {
+                e.preventDefault();
+                try {
+                    if (birthdateInput.showPicker) {
+                        birthdateInput.showPicker();
+                    }
+                } catch (error) {
+                    birthdateInput.focus();
+                }
+            });
+        }
+    }
 }); // End of DOMContentLoaded event listener
