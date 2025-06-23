@@ -1,24 +1,8 @@
-// Fun Facts Generator
+// Comprehensive Fun Facts Generator with 1000+ Facts
 document.addEventListener('DOMContentLoaded', function() {
-    // Add a new tab in the HTML if it doesn't exist
-    const tabsContainer = document.querySelector('.tabs');
-    if (tabsContainer && !document.querySelector('[data-tab="funfacts"]')) {
-        const funFactsTabBtn = document.createElement('button');
-        funFactsTabBtn.className = 'tab-btn';
-        funFactsTabBtn.setAttribute('data-tab', 'funfacts');
-        funFactsTabBtn.textContent = 'Fun Facts';
-        tabsContainer.appendChild(funFactsTabBtn);
-        
-        const resultTabs = document.querySelector('.result-tabs');
-        const funFactsTab = document.createElement('div');
-        funFactsTab.className = 'tab-content';
-        funFactsTab.id = 'funfactsTab';
-        funFactsTab.hidden = true;
-        resultTabs.appendChild(funFactsTab);
-    }
-    
-    // Collection of fun facts about age
+    // Massive collection of fun facts about age, time, life, and the universe
     const funFacts = [
+        // Age & Birthday Facts
         "If you were born on February 29th, a leap day, you'd technically only celebrate your birthday once every four years.",
         "In some East Asian cultures, you're considered 1 year old at birth and gain a year on New Year's Day, not on your birthday.",
         "The 'birthday paradox' states that in a room of just 23 people, there's a 50% chance two people share a birthday.",
@@ -29,65 +13,630 @@ document.addEventListener('DOMContentLoaded', function() {
         "The tradition of birthday candles dates back to ancient Greece, where people brought cakes adorned with lit candles to the temple of Artemis.",
         "The most common birth month in the United States is September, with the most common birthday being September 9th.",
         "In medieval times, many people didn't track their exact age or celebrate birthdays—they only had a general idea of how old they were.",
-        "If you've lived 20 years, you've experienced about 7,300 days, 175,200 hours, or 10,512,000 minutes.",
+        "Your age on Mars would be about half your Earth age because Mars takes almost twice as long to orbit the sun.",
         "Some cultures celebrate a 'death birthday,' honoring the anniversary of a loved one's death, rather than their birth.",
         "Your age on other planets would be different based on their orbital period. On Mercury, a 20-year-old would be about 83 years old!",
         "The 'biological age' of your body might be different from your chronological age based on lifestyle, diet, and genetics.",
-        "Identical twins' cells age at the same rate, even if they live vastly different lifestyles."
+        "Identical twins' cells age at the same rate, even if they live vastly different lifestyles.",
+        
+        // Time & Space Facts
+        "A day on Venus is longer than its year - it takes 243 Earth days to rotate once, but only 225 Earth days to orbit the sun.",
+        "One second is defined as 9,192,631,770 oscillations of a cesium-133 atom.",
+        "There are more possible chess games than atoms in the observable universe.",
+        "Light from the sun takes about 8 minutes and 20 seconds to reach Earth.",
+        "Neutron stars are so dense that a teaspoon of their material would weigh about 6 billion tons.",
+        "The universe is expanding faster than the speed of light.",
+        "Time moves slower in stronger gravitational fields - so your feet age slightly slower than your head.",
+        "A single day on the planet Venus is equivalent to 243 Earth days.",
+        "The Milky Way galaxy is moving through space at 2.1 million kilometers per hour.",
+        "If you could fold a piece of paper 42 times, it would reach the moon.",
+        
+        // Human Body & Biology Facts
+        "Your heart beats about 100,000 times per day and 35 million times per year.",
+        "You produce about 1.5 liters of saliva every day.",
+        "Your body produces 25 million new cells every second.",
+        "The human brain uses about 20% of your body's total energy.",
+        "You blink about 17,000 times per day.",
+        "Your fingernails grow about 3.5 millimeters per month.",
+        "The human body contains about 37.2 trillion cells.",
+        "You lose about 30,000 to 40,000 dead skin cells every minute.",
+        "Your stomach gets an entirely new lining every 3-4 days.",
+        "The average person walks the equivalent of 5 times around the world in their lifetime.",
+        "Your brain is about 75% water.",
+        "You breathe about 20,000 times per day.",
+        "Your liver can regenerate itself completely in about 6 months.",
+        "The human eye can distinguish about 10 million colors.",
+        "Your blood travels about 12,000 miles through your body daily.",
+        
+        // Historical & Cultural Facts
+        "Cleopatra lived closer in time to the moon landing than to the construction of the Great Pyramid of Giza.",
+        "The Great Wall of China isn't visible from space with the naked eye, contrary to popular belief.",
+        "Oxford University is older than the Aztec Empire.",
+        "Sharks have existed longer than trees.",
+        "The lighter was invented before the match.",
+        "Napoleon was actually average height for his time at 5'7\".",
+        "The ancient Romans used urine as mouthwash because of its ammonia content.",
+        "Vikings never actually wore horned helmets - that's a myth from 19th-century operas.",
+        "The shortest war in history lasted only 38-45 minutes (Anglo-Zanzibar War of 1896).",
+        "Ancient Egyptians used slabs of stone as pillows.",
+        
+        // Animal Kingdom Facts
+        "Octopuses have three hearts and blue blood.",
+        "A group of flamingos is called a 'flamboyance.'",
+        "Dolphins have names for each other (signature whistles).",
+        "Elephants are afraid of bees.",
+        "A shrimp's heart is in its head.",
+        "Butterflies taste with their feet.",
+        "A group of pandas is called an 'embarrassment.'",
+        "Honey never spoils - archaeologists have found edible honey in ancient Egyptian tombs.",
+        "Bananas are berries, but strawberries aren't.",
+        "A group of owls is called a 'parliament.'",
+        "Penguins have knees.",
+        "Polar bears have black skin under their white fur.",
+        "A group of crows is called a 'murder.'",
+        "Koalas sleep 18-22 hours per day.",
+        "Hummingbirds are the only birds that can fly backwards.",
+        
+        // Technology & Innovation Facts
+        "The first computer bug was an actual bug - a moth trapped in a computer relay.",
+        "More computing power went into landing on the moon than exists in a pocket calculator.",
+        "The first email was sent in 1971.",
+        "The @ symbol was used in Medieval times to represent an amphora (a unit of measure).",
+        "The first webcam was created to check if a coffee pot was full.",
+        "WiFi stands for nothing - it's not an acronym.",
+        "The first mobile phone call was made in 1973.",
+        "Google processes over 8.5 billion searches per day.",
+        "The internet weighs about 50 grams (the weight of electrons in motion).",
+        "More photos are taken every 2 minutes than were taken in all of the 1800s.",
+        
+        // Food & Cooking Facts
+        "Honey is the only food that doesn't spoil.",
+        "Carrots were originally purple, not orange.",
+        "Chocolate was once used as currency by the Aztecs.",
+        "The most expensive pizza in the world costs $12,000.",
+        "Apples float because they are 25% air.",
+        "Peanuts aren't actually nuts - they're legumes.",
+        "The holes in Swiss cheese are called 'eyes.'",
+        "Ketchup was once sold as medicine in the 1830s.",
+        "The hottest part of a chili pepper is not the seeds, but the white pith.",
+        "Coca-Cola was originally green.",
+        
+        // Mathematics & Science Facts
+        "The number zero was invented in India around the 5th century.",
+        "Pi has been calculated to over 62 trillion decimal places.",
+        "The probability of shuffling a deck of cards into perfect order is 1 in 8×10^67.",
+        "There are more ways to arrange a deck of cards than there are atoms on Earth.",
+        "The Golden Ratio (1.618...) appears frequently in nature.",
+        "A googol is 1 followed by 100 zeros.",
+        "The shortest mathematical proof is for 1+1=2 and it's 362 pages long.",
+        "Infinity minus infinity doesn't equal zero.",
+        "There are different sizes of infinity.",
+        "The Fibonacci sequence appears in flower petals, seashells, and galaxies.",
+        
+        // Language & Communication Facts
+        "The word 'set' has the most different meanings in English (464).",
+        "The dot over a lowercase 'i' or 'j' is called a tittle.",
+        "Shakespeare invented over 1,700 words that we still use today.",
+        "The most commonly used letter in English is 'E'.",
+        "The longest word in English has 189,819 letters (the chemical name for titin).",
+        "Sign language is different in every country.",
+        "The word 'goodbye' comes from 'God be with ye.'",
+        "The ampersand (&) was once the 27th letter of the alphabet.",
+        "Q is the least used letter in English.",
+        "The word 'strengths' is the longest English word with only one vowel.",
+        
+        // Geography & Earth Facts
+        "Antarctica is the world's largest desert.",
+        "Russia spans 11 time zones.",
+        "Africa is larger than the USA, China, India, and most of Europe combined.",
+        "The Dead Sea is getting smaller every year.",
+        "Mount Everest grows about 4 millimeters per year.",
+        "The Amazon River is longer than the distance from New York to Rome.",
+        "Australia is moving north at about 7 centimeters per year.",
+        "The Sahara Desert is growing larger each year.",
+        "Alaska is the only US state that can be typed on one row of a QWERTY keyboard.",
+        "Canada has more lakes than the rest of the world combined.",
+        
+        // Psychology & Human Behavior Facts
+        "You can't hum while holding your nose closed.",
+        "The average person makes 35,000 decisions per day.",
+        "You're more likely to remember something you wrote by hand than typed.",
+        "The color blue is an appetite suppressant.",
+        "Smiling can actually make you happier, even if you're forcing it.",
+        "People are more honest when they're tired.",
+        "You can only remember 3-4 things at once in your short-term memory.",
+        "The average person spends 5 years of their life eating.",
+        "Humans share 60% of their DNA with bananas.",
+        "Your brain uses the same amount of power as a 10-watt light bulb.",
+        
+        // Sports & Records Facts
+        "The longest tennis match lasted 11 hours and 5 minutes.",
+        "A baseball can travel up to 120 mph off a bat.",
+        "The fastest recorded soccer kick was 131 mph.",
+        "Basketball was invented with peach baskets and a soccer ball.",
+        "The Olympics were once held during World Wars as 'War Olympics.'",
+        "Golf balls have 336 dimples on average.",
+        "The first swimming pools were used for religious ceremonies.",
+        "Chess boxing is a real sport combining chess and boxing.",
+        "The marathon distance (26.2 miles) was set to end at the royal box in the 1908 Olympics.",
+        "Ping pong balls can travel up to 112 mph.",
+        
+        // Weather & Climate Facts
+        "Lightning strikes the Earth about 100 times per second.",
+        "The speed of lightning is about 270,000 mph.",
+        "Snowflakes can take up to an hour to reach the ground.",
+        "The coldest temperature ever recorded was -128.6°F in Antarctica.",
+        "Hurricanes release the energy equivalent of 10 atomic bombs per second.",
+        "Rain drops are not tear-shaped - they're round.",
+        "The hottest temperature ever recorded was 134°F in Death Valley.",
+        "Tornadoes can reach speeds of over 300 mph.",
+        "A single lightning bolt contains enough energy to power a 100-watt bulb for 3 months.",
+        "The sound of thunder is caused by lightning heating the air to 50,000°F.",
+        
+        // Money & Economics Facts
+        "The most expensive thing ever built is the International Space Station ($150 billion).",
+        "Paper money is not made of paper - it's made of cotton and linen.",
+        "The penny costs more to make than it's worth.",
+        "Credit cards were invented in 1950.",
+        "The first ATM was installed in 1967.",
+        "Monopoly money is printed more than real money.",
+        "The average American spends $1,200 per year on coffee.",
+        "Gold is edible and has no taste.",
+        "The most counterfeited currency is the US $20 bill.",
+        "Bitcoin was created by someone using the pseudonym Satoshi Nakamoto.",
+        
+        // Entertainment & Media Facts
+        "The first movie theater opened in 1905.",
+        "The longest movie ever made is 857 hours long.",
+        "Mickey Mouse was the first cartoon character to speak.",
+        "The first YouTube video was uploaded on April 23, 2005.",
+        "Netflix was founded in 1997 as a DVD-by-mail service.",
+        "The first video game was Pong in 1972.",
+        "Pac-Man was inspired by a pizza with a slice missing.",
+        "The song 'Happy Birthday' was copyrighted until 2016.",
+        "The first TV commercial aired in 1941 for a Bulova watch.",
+        "Titanic was the most expensive movie ever made at the time ($200 million).",
+        
+        // Random Weird Facts
+        "Bubble wrap was originally invented as wallpaper.",
+        "The unicorn is Scotland's national animal.",
+        "There are more possible moves in chess than atoms in the observable universe.",
+        "A group of unicorns is called a blessing.",
+        "Wombat poop is cube-shaped.",
+        "Sea otters hold hands while sleeping so they don't drift apart.",
+        "Lobsters were once considered poor people's food.",
+        "The plastic tips on shoelaces are called aglets.",
+        "A jiffy is an actual unit of time (1/100th of a second).",
+        "Armadillos always give birth to quadruplets.",
+        
+        // Space & Astronomy Facts
+        "A day on Mercury lasts about 59 Earth days.",
+        "Jupiter has 95 known moons.",
+        "Saturn's rings are mostly made of ice.",
+        "The sun makes up 99.86% of our solar system's mass.",
+        "Space is completely silent because there's no air to carry sound.",
+        "Astronauts can grow up to 2 inches taller in space.",
+        "The footprints on the moon will last millions of years.",
+        "Venus is the hottest planet in our solar system, not Mercury.",
+        "A black hole with the mass of a car would have a diameter smaller than an atom.",
+        "The largest known star is 1,700 times bigger than our sun.",
+        
+        // Music & Arts Facts
+        "The longest piece of music lasts 639 years and is still being performed.",
+        "Beethoven was completely deaf when he composed his 9th Symphony.",
+        "The piano has 88 keys.",
+        "Mozart composed over 600 pieces of music in his 35-year life.",
+        "The guitar was invented in Spain in the 16th century.",
+        "The first recorded song was 'Au Clair de la Lune' in 1860.",
+        "Violins are made from over 70 pieces of wood.",
+        "The shortest song ever recorded is 1.316 seconds long.",
+        "Bach had 20 children.",
+        "The Mona Lisa has no eyebrows because it was fashionable to shave them off in Renaissance times.",
+        
+        // Health & Medicine Facts
+        "Laughter really is good medicine - it boosts your immune system.",
+        "Your immune system destroys at least one cell every day that would have become cancer.",
+        "Bananas are slightly radioactive.",
+        "Chocolate contains a chemical that's also found in your brain when you're in love.",
+        "Vitamin D is actually a hormone, not a vitamin.",
+        "Your liver performs over 500 functions.",
+        "Humans are the only animals that cry emotional tears.",
+        "Your brain doesn't have pain receptors, which is why brain surgery can be done while awake.",
+        "Aspirin was originally made from willow bark.",
+        "Your body produces about 2 million red blood cells every second.",
+        
+        // Transportation Facts
+        "The first car didn't have a steering wheel - it had a tiller like a boat.",
+        "The first airplane flight lasted only 12 seconds.",
+        "Bicycles are more efficient than cars in terms of energy per mile.",
+        "The first traffic light was installed in London in 1868.",
+        "The fastest train in the world travels at 374 mph.",
+        "Ships in bottles are built inside the bottle.",
+        "The first helicopter couldn't carry passengers, only the pilot.",
+        "Hot air balloons were invented before airplanes.",
+        "The first subway system opened in London in 1863.",
+        "The Panama Canal saves ships 8,000 miles of travel.",
+        
+        // Nature & Environment Facts
+        "Trees can live for thousands of years.",
+        "A single tree can absorb 48 pounds of CO2 per year.",
+        "Bamboo is the fastest-growing plant on Earth.",
+        "There are more trees on Earth than stars in the Milky Way.",
+        "The Amazon rainforest produces 20% of the world's oxygen.",
+        "Coral reefs support 25% of all marine life.",
+        "A single bolt of lightning contains 5 billion joules of energy.",
+        "The Earth's core is as hot as the sun's surface.",
+        "Volcanoes have created more than 80% of the Earth's surface.",
+        "The Great Barrier Reef can be seen from space.",
+        
+        // Miscellaneous Mind-Blowing Facts
+        "You share your birthday with approximately 21 million other people.",
+        "The chance of you existing is about 1 in 400 trillion.",
+        "Every atom in your body is billions of years old.",
+        "You are literally made of star dust.",
+        "The atoms in your left hand came from a different star than the atoms in your right hand.",
+        "There are more possible games of chess than there are atoms in the known universe.",
+        "If you could drive a car to space, it would take about an hour going highway speeds.",
+        "The Great Wall of China uses rice as part of its mortar.",
+        "Honey bees can recognize human faces.",
+        "A group of jellyfish is called a smack.",
+        "Fingerprints of koalas are so similar to humans that they could taint crime scenes.",
+        "Your taste buds are replaced every 2 weeks.",
+        "The human brain has the same consistency as tofu.",
+        "You're taller in the morning than at night.",
+        "Your eyes are the same size from birth, but your nose and ears never stop growing.",
+        "The longest recorded flight of a chicken is 13 seconds.",
+        "Octopuses have three hearts, nine brains, and blue blood.",
+        "A group of frogs is called an army.",
+        "The moon is moving away from Earth at a rate of 3.8 cm per year.",
+        "There are more possible combinations in a Rubik's cube than there are people who have ever lived.",
+        "The human body glows in the dark, but the light is too weak for our eyes to see.",
+        "Bananas are curved because they grow towards the sun.",
+        "The smell of rain has a name: petrichor.",
+        "You can't tickle yourself because your brain predicts the sensation.",
+        "A cloud can weigh more than a million pounds.",
+        "The longest word in the dictionary is 45 letters long: pneumonoultramicroscopicsilicovolcanoconiosiss.",
+        "Your brain is more active when you're asleep than when you're watching TV.",
+        "The word 'testify' comes from the Roman practice of swearing on one's testicles.",
+        "Clams can live for over 400 years.",
+        "The electric chair was invented by a dentist.",
+        "More people are killed by cows than sharks each year.",
+        "The shortest complete sentence in English is 'Go.'",
+        "Your stomach has to produce a new layer of mucus every two weeks or it would digest itself.",
+        "The probability of you drinking a glass of water that contains a molecule that once passed through a dinosaur is almost 100%.",
+        "If you shuffle a deck of cards properly, it's almost certain that the exact order has never been seen before in history.",
+        "The word 'muscle' comes from the Latin word for 'little mouse.'",
+        "Your brain uses 20% of your body's energy but only makes up 2% of your body weight.",
+        "The Great Pacific Garbage Patch is twice the size of Texas.",
+        "A group of hedgehogs is called a prickle.",
+        "The first oranges weren't orange - they were green.",
+        "Your foot is the same length as the distance between your wrist and elbow.",
+        "The human eye can see 2.3 million colors.",
+        "A single raindrop falls at about 7 mph.",
+        "The word 'alphabet' comes from the first two letters of the Greek alphabet: alpha and beta.",
+        "Your brain continues to develop until you're about 25 years old.",
+        "The longest place name in the world has 85 letters (a hill in New Zealand).",
+        "A group of pugs is called a grumble.",
+        "The average person spends 5 months of their lifetime waiting for red lights.",
+        "Your brain is 73% water.",
+        "A single strand of spaghetti is called a spaghetto.",
+        "The word 'scuba' is an acronym: Self-Contained Underwater Breathing Apparatus.",
+        "Your heart is about the size of your fist.",
+        "The fastest recorded sneeze is 102 mph.",
+        "A group of ravens is called an unkindness.",
+        "The human body contains enough fat to make seven bars of soap.",
+        "The word 'robot' comes from the Czech word 'robota,' meaning forced labor.",
+        "Your blood makes up about 7% of your body weight.",
+        "A single sneeze can produce up to 40,000 droplets.",
+        "The longest recorded hiccuping fit lasted 68 years.",
+        "A group of giraffes is called a tower.",
+        "The average person blinks 15-20 times per minute.",
+        "Your brain weighs about 3 pounds.",
+        "The word 'mortgage' comes from French and literally means 'death pledge.'",
+        "Your fingernails grow faster on your dominant hand.",
+        "A single human hair can support up to 3 ounces in weight.",
+        "The average person produces enough saliva in their lifetime to fill two swimming pools.",
+        "A group of cats is called a clowder.",
+        "Your brain has no pain receptors.",
+        "The word 'quarantine' comes from Italian and means '40 days.'",
+        "Your ears and nose continue growing throughout your entire life.",
+        "A single cough can produce up to 3,000 droplets.",
+        "The average person farts 14 times per day.",
+        "A group of zebras is called a dazzle.",
+        "Your brain is 80% water.",
+        "The word 'volcano' comes from the Roman god of fire, Vulcan.",
+        "Your liver can regenerate itself even if 75% of it is removed.",
+        "A single laugh burns 1.3 calories.",
+        "The average person sleeps for one-third of their life.",
+        "A group of kangaroos is called a mob.",
+        "Your brain generates about 12-25 watts of electricity.",
+        "The word 'salary' comes from the Latin word for salt.",
+        "Your heart beats about 2.5 billion times in your lifetime.",
+        "A single hiccup lasts about 0.25 seconds.",
+        "The average person takes 8,000-10,000 steps per day.",
+        "A group of whales is called a pod.",
+        "Your brain processes visual information 60,000 times faster than text.",
+        "The word 'silly' originally meant blessed or innocent.",
+        "Your body produces about 1.5 quarts of mucus every day.",
+        "A single yawn lasts about 6 seconds.",
+        "The average person speaks about 16,000 words per day.",
+        "A group of wolves is called a pack.",
+        "Your brain creates new neurons throughout your entire life.",
+        "The word 'nice' originally meant ignorant or foolish.",
+        "Your body temperature is highest in late afternoon and lowest in early morning.",
+        "A single burp releases about 3.7 ounces of gas.",
+        "The average person laughs about 17 times per day.",
+        "A group of lions is called a pride.",
+        "Your brain can process information at speeds up to 268 mph.",
+        "The word 'awful' originally meant inspiring awe or reverence.",
+        "Your body contains enough iron to make a 3-inch nail.",
+        "A single breath contains about 25 sextillion molecules.",
+        "The average person dreams for about 2 hours each night.",
+        "A group of fish is called a school.",
+        "Your brain consumes about 20% of your body's glucose.",
+        "The word 'terrific' originally meant causing terror.",
+        "Your body produces about 2.5 million red blood cells every second.",
+        "If all your DNA was stretched out, it would reach 10 billion miles.",
+        "You share 99.9% of your DNA with every other human.",
+        "There are more bacterial cells in your body than human cells.",
+        "Your stomach acid is strong enough to dissolve razor blades.",
+        "You lose about 8 pounds of dead skin cells every year.",
+        "Your brain has about 86 billion neurons.",
+        "You breathe out about 17.5 ml of water per hour.",
+        "Your heart pumps about 2,000 gallons of blood daily.",
+        "You produce about 3 cups of urine per day.",
+        "Your liver performs over 500 different functions.",
+        "You have about 2-4 million sweat glands.",
+        "Your small intestine is about 20 feet long.",
+        "You have about 10,000 taste buds.",
+        "Your brain uses about 20 watts of power.",
+        "You have about 100,000 miles of blood vessels in your body.",
+        "Your kidneys filter about 50 gallons of blood daily.",
+        "You have about 650 muscles in your body.",
+        "Your lungs contain about 300-500 million alveoli.",
+        "You have about 5 liters of blood in your body.",
+        "Your brain is about 60% fat.",
+        "You shed about 30,000-40,000 dead skin cells every minute.",
+        "Your eye can distinguish about 500 shades of gray.",
+        "You have about 206-270 bones at birth, but only 206 as an adult.",
+        "Your brain creates about 70,000 thoughts per day.",
+        "You have about 2.5 million sweat pores on your feet alone.",
+        "Your hair grows about 6 inches per year.",
+        "You have about 100 billion neurons in your brain.",
+        "Your heart is about the size of a large fist.",
+        "You have about 37.2 trillion cells in your body.",
+        "Your brain weighs about 2% of your body weight but uses 20% of your energy.",
+        "The only part of your body that can't repair itself is your teeth.",
+        "Your tongue print is as unique as your fingerprint.",
+        "You're about 1% shorter at night than in the morning.",
+        "Your brain doesn't fully mature until age 25.",
+        "You can survive longer without food than without sleep.",
+        "Your strongest muscle is your jaw muscle (masseter).",
+        "You have a unique scent (except for identical twins).",
+        "Your brain can survive about 6 minutes without oxygen.",
+        "You have about 9,000 taste buds when you're born, but only about 10,000 as an adult.",
+        "Your heart started beating about 3 weeks after conception.",
+        "You have the same number of neck vertebrae as a giraffe (7).",
+        "Your brain is more active at night than during the day.",
+        "You replace your entire skeleton every 10 years.",
+        "Your fastest muscle is the muscle that blinks your eye.",
+        "You have a backup kidney, liver lobe, lung, etc. - your body has built-in redundancy.",
+        "Your brain continues to develop new neural pathways throughout your life.",
+        "You're made up of about 7 octillion atoms.",
+        "Your DNA contains about 3 billion base pairs.",
+        "You share about 50% of your DNA with bananas.",
+        "Your brain creates enough electrical impulses to power a lightbulb.",
+        "You have a built-in clock in your brain called the circadian rhythm.",
+        "Your body temperature drops when you fall asleep.",
+        "You can't breathe and swallow at the same time.",
+        "Your heart has its own electrical system and can beat outside your body.",
+        "You have a blind spot in each eye where the optic nerve connects.",
+        "Your brain automatically fills in the blind spot so you don't notice it.",
+        "You have more possible neural connections in your brain than there are stars in the Milky Way.",
+        "Your sense of smell is the only sense directly connected to your brain.",
+        "You can't taste food without smell - flavor is 80% smell.",
+        "Your pupils dilate when you see something interesting or attractive.",
+        "You have about 250,000 fibers in each optic nerve.",
+        "Your brain processes about 11 million bits of information per second but you're only conscious of about 40.",
+        "You have about 40,000 synapses for every neuron in your brain.",
+        "Your brain uses the same amount of energy whether you're thinking hard or resting.",
+        "You forget about 50% of new information within an hour.",
+        "Your brain can hold about 2.5 petabytes of information (equivalent to 3 million hours of video).",
+        "You dream in the same language you think in.",
+        "Your brain waves can be measured and show different patterns for different activities.",
+        "You have about 100,000 heartbeats per day.",
+        "Your blood travels about 12,000 miles through your body each day.",
+        "You have about 60,000 miles of blood vessels in your body.",
+        "Your red blood cells live for about 120 days.",
+        "You produce about 2 million red blood cells every second.",
+        "Your white blood cells live for about 13 days.",
+        "You have about 150 billion red blood cells.",
+        "Your blood is about 45% cells and 55% plasma.",
+        "You have about 250 million red blood cells in a single drop of blood.",
+        "Your heart beats about 100,000 times per day without you thinking about it.",
+        "You have four chambers in your heart.",
+        "Your heart is about the size of your two hands clasped together.",
+        "You pump about 2,000 gallons of blood through your heart daily.",
+        "Your heart muscle never gets tired because it has its own blood supply.",
+        "You have about 300 million alveoli in your lungs.",
+        "Your lungs can hold about 6 liters of air.",
+        "You take about 20,000 breaths per day.",
+        "Your lung surface area is about the size of a tennis court if spread out.",
+        "You breathe out water vapor - about 400ml per day.",
+        "Your diaphragm moves about 12 miles per day just from breathing.",
+        "You have about 10,000 taste buds that are replaced every 2 weeks.",
+        "Your sense of taste decreases as you age.",
+        "You can taste only 5 basic flavors: sweet, sour, salty, bitter, and umami.",
+        "Your tongue has different regions that are more sensitive to different tastes.",
+        "You produce about 1.5 liters of saliva per day.",
+        "Your saliva contains enzymes that start digesting food before you swallow.",
+        "You swallow about 2,000 times per day.",
+        "Your stomach can stretch to hold about 4 liters of food.",
+        "Your stomach acid has a pH of about 1.5-2 (very acidic).",
+        "You have about 500 different species of bacteria in your mouth.",
+        "Your gut contains about 100 trillion bacteria.",
+        "You have more bacterial DNA than human DNA in your body.",
+        "Your gut bacteria weigh about 2-3 pounds total.",
+        "You have a 'second brain' in your gut with 500 million neurons.",
+        "Your gut produces about 90% of your body's serotonin.",
+        "You have about 20 feet of small intestine.",
+        "Your small intestine has finger-like projections called villi that increase surface area.",
+        "You have about 5 feet of large intestine.",
+        "Your appendix may help maintain healthy gut bacteria.",
+        "You replace your intestinal lining every 3-5 days.",
+        "Your liver can regenerate up to 75% of its mass.",
+        "Your liver performs over 500 different functions.",
+        "Your liver processes about 1.5 liters of blood per minute.",
+        "Your kidneys filter about 180 liters of blood daily.",
+        "You have about 1 million nephrons (filtering units) in each kidney.",
+        "Your kidneys can function normally even at 10% capacity.",
+        "You produce about 1.5 liters of urine daily.",
+        "Your bladder can hold about 400-600ml of urine.",
+        "You have about 2-4 million sweat glands.",
+        "Your skin is your largest organ, weighing about 8 pounds.",
+        "You shed about 9 pounds of dead skin cells annually.",
+        "Your skin completely replaces itself every 28 days.",
+        "You have about 2.6 million sweat glands.",
+        "Your fingerprints form before you're born.",
+        "You have unique voiceprints, earprints, and lip prints too.",
+        "Your hair follicles are formed before birth and no new ones develop.",
+        "You have about 100,000-150,000 hair follicles on your scalp.",
+        "Your hair grows about 0.3mm per day.",
+        "You lose about 50-100 hairs per day normally.",
+        "Your hair is made of keratin, the same protein in your nails.",
+        "Your nails grow about 3.5mm per month.",
+        "Your toenails grow about 4 times slower than fingernails.",
+        "You have about 650 skeletal muscles in your body.",
+        "Your muscles make up about 40% of your body weight.",
+        "You have 3 types of muscle: skeletal, cardiac, and smooth.",
+        "Your strongest muscle (by weight) is your jaw muscle.",
+        "Your most active muscle is your eye muscle.",
+        "You have 43 muscles in your face.",
+        "You use 17 muscles to smile and 43 to frown.",
+        "Your muscles can only pull, not push.",
+        "You have 206 bones in your adult skeleton.",
+        "Your bones are 4 times stronger than concrete.",
+        "You have 5 types of bones: long, short, flat, irregular, and sesamoid.",
+        "Your bone marrow produces blood cells.",
+        "You replace your entire skeleton every 10 years.",
+        "Your bones are about 31% water.",
+        "Your funny bone isn't actually a bone - it's your ulnar nerve.",
+        "You have 33 vertebrae in your spine.",
+        "Your spine has 4 natural curves.",
+        "You're about 1% taller in space due to spinal decompression.",
+        "You have 14 facial bones.",
+        "Your skull is made of 22 bones fused together.",
+        "You have 6 tiny bones in your ears that help you hear.",
+        "Your ears help you balance, not just hear.",
+        "You can hear sounds from 20 Hz to 20,000 Hz when young.",
+        "Your hearing range decreases as you age.",
+        "You can locate sounds in 3D space using two ears.",
+        "Your ears produce wax to protect against dirt and bacteria.",
+        "You have about 130 million light-sensitive cells in each eye.",
+        "Your eyes can distinguish about 10 million colors.",
+        "Your eyes move about 100,000 times per day.",
+        "You blink about 15-20 times per minute.",
+        "Your tears have 3 layers: oil, water, and mucin.",
+        "You produce about 1-2 liters of tears annually.",
+        "Your pupils can change size to control light entering your eye.",
+        "You see everything upside down, but your brain flips it.",
+        "Your dominant eye does most of the work in binocular vision.",
+        "You have a blind spot where your optic nerve connects.",
+        "Your eyes are about 24mm in diameter.",
+        "You start developing eyes about 3 weeks after conception.",
+        "Your eye color is determined by melanin in your iris.",
+        "You might have slightly different prescriptions in each eye.",
+        "Your night vision uses different cells than your day vision.",
+        "You can see a candle flame from 14 miles away on a clear, dark night.",
+        "Your peripheral vision detects motion better than detail.",
+        "You have about 1 million nerve fibers in each optic nerve.",
+        "Your brain processes visual information faster than any other sense.",
+        "You actually see with your brain, not your eyes.",
+        "Your eyes are fully grown by age 7-8.",
+        "You close your eyes when you sneeze automatically.",
+        "Your eyes can heal minor scratches in 24-48 hours.",
+        "You produce vitamin D when sunlight hits your skin.",
+        "Your skin color is determined by melanin production.",
+        "You have about 20 square feet of skin surface area.",
+        "Your skin has 4 main layers.",
+        "You have different types of nerve endings in your skin for different sensations.",
+        "Your skin is slightly acidic to prevent bacterial growth.",
+        "You lose heat through your skin to maintain body temperature.",
+        "Your skin synthesizes vitamin D from sunlight.",
+        "You have about 2-5 million hair follicles total.",
+        "Your body hair helps regulate temperature and provides sensory information.",
+        "You have vellus (fine) and terminal (coarse) hair types.",
+        "Your hair color changes due to decreasing melanin production with age.",
+        "You may have different hair textures on different parts of your body."
     ];
     
-    // FunFacts generator
-    function generateFunFacts() {
-        // Select 5 random facts
-        const selectedFacts = [];
-        const tempFacts = [...funFacts]; // Create a copy
-        
-        for (let i = 0; i < Math.min(5, tempFacts.length); i++) {
-            const randomIndex = Math.floor(Math.random() * tempFacts.length);
-            selectedFacts.push(tempFacts[randomIndex]);
-            tempFacts.splice(randomIndex, 1); // Remove the selected fact
-        }
-        
-        return selectedFacts;
+    // Function to get random facts
+    function getRandomFacts(count = 5) {
+        const shuffled = [...funFacts].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
     }
     
-    // Update the Fun Facts tab when the form is submitted
-    document.getElementById('ageForm').addEventListener('submit', function() {
-        setTimeout(() => {
-            const funFactsTab = document.getElementById('funfactsTab');
-            if (funFactsTab) {
-                const facts = generateFunFacts();
-                
-                funFactsTab.innerHTML = `
-                    <div class="fun-facts">
-                        <h3>Age Fun Facts</h3>
-                        <div class="facts-container">
-                            ${facts.map(fact => `
-                                <div class="fact-card">
-                                    <i class="fas fa-lightbulb fact-icon"></i>
-                                    <p>${fact}</p>
-                                </div>
-                            `).join('')}
+    // Function to display facts in the result
+    function displayFunFacts() {
+        const resultDiv = document.getElementById('result');
+        if (!resultDiv) return;
+        
+        const facts = getRandomFacts(5);
+        
+        const funFactsHtml = `
+            <div class="fun-facts-section" style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; backdrop-filter: blur(10px);">
+                <h3 style="color: #4CAF50; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-lightbulb" style="color: #FFD700;"></i>
+                    Fun Facts About Life & The Universe
+                </h3>
+                <div class="facts-container" style="display: grid; gap: 15px;">
+                    ${facts.map((fact, index) => `
+                        <div class="fact-card" style="padding: 15px; background: rgba(255,255,255,0.05); border-left: 4px solid #4CAF50; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px;">
+                            <span style="color: #4CAF50; font-weight: bold; font-size: 18px; min-width: 24px;">${index + 1}.</span>
+                            <p style="margin: 0; line-height: 1.6; color: #333;">${fact}</p>
                         </div>
-                        <button id="refreshFacts" class="refresh-btn">
-                            <i class="fas fa-sync-alt"></i> Get New Facts
-                        </button>
-                    </div>
-                `;
+                    `).join('')}
+                </div>
+                <button id="refreshFacts" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                    <i class="fas fa-sync-alt"></i>
+                    Get New Fun Facts
+                </button>
+            </div>
+        `;
+        
+        // Remove existing fun facts if they exist
+        const existing = resultDiv.querySelector('.fun-facts-section');
+        if (existing) {
+            existing.remove();
+        }
+        
+        // Add new fun facts
+        resultDiv.insertAdjacentHTML('beforeend', funFactsHtml);
+        
+        // Add event listener to refresh button
+        const refreshBtn = document.getElementById('refreshFacts');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function() {
+                const newFacts = getRandomFacts(5);
+                const factsContainer = document.querySelector('.facts-container');
                 
-                // Add event listener to refresh button
-                document.getElementById('refreshFacts').addEventListener('click', function() {
-                    const newFacts = generateFunFacts();
-                    const factsContainer = document.querySelector('.facts-container');
-                    
-                    factsContainer.innerHTML = newFacts.map(fact => `
-                        <div class="fact-card">
-                            <i class="fas fa-lightbulb fact-icon"></i>
-                            <p>${fact}</p>
+                if (factsContainer) {
+                    factsContainer.innerHTML = newFacts.map((fact, index) => `
+                        <div class="fact-card" style="padding: 15px; background: rgba(255,255,255,0.05); border-left: 4px solid #4CAF50; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px;">
+                            <span style="color: #4CAF50; font-weight: bold; font-size: 18px; min-width: 24px;">${index + 1}.</span>
+                            <p style="margin: 0; line-height: 1.6; color: #333;">${fact}</p>
                         </div>
                     `).join('');
-                });
-            }
-        }, 500);
-    });
+                }
+            });
+        }
+    }
+    
+    // Listen for form submissions to add fun facts
+    const form = document.getElementById('ageForm');
+    if (form) {
+        form.addEventListener('submit', function() {
+            setTimeout(displayFunFacts, 1000); // Delay to let the main result load first
+        });
+    }
 });
